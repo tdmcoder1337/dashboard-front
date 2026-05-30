@@ -1,0 +1,136 @@
+.dashboard-footer {
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border-color, #e5e5e5);
+  background: transparent;
+  margin-left: 80px;
+}
+
+.footer-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 30px;
+  margin-bottom: 24px;
+  padding: 24px 0;
+}
+
+.footer-section h4 {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary, #333);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: white;
+}
+
+.footer-section p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-secondary, #666);
+  line-height: 1.6;
+  color:white;
+}
+
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  color: white;
+}
+
+.footer-section li {
+  margin-bottom: 8px;
+  color: white;
+}
+
+.footer-section a {
+  font-size: 14px;
+  color: var(--text-secondary, #666);
+  text-decoration: none;
+  transition: color 0.3s ease;
+    color: white;
+}
+
+.footer-section a:hover {
+  color: var(--text-primary, #333);
+}
+
+.social-links {
+  display: flex;
+  gap: 12px;
+}
+
+.social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--bg-tertiary, #e5e5e5);
+  font-size: 12px;
+  transition: all 0.3s ease;
+}
+
+.social-link:hover {
+  background: #007bff;
+  color: white;
+}
+
+.footer-bottom {
+  text-align: center;
+  padding: 16px 0;
+  border-top: 1px solid var(--border-color, #e5e5e5);
+  color: var(--text-secondary, #666);
+  font-size: 12px;
+}
+
+.footer-bottom p {
+  margin: 0;
+}
+
+/* Dark Mode */
+[data-theme='dark'] .dashboard-footer {
+  background: var(--bg-secondary, #2a2a2a);
+  border-top-color: var(--border-color, #404040);
+}
+
+[data-theme='dark'] .footer-section h4 {
+  color: var(--text-primary, #fff);
+}
+
+[data-theme='dark'] .footer-section p,
+[data-theme='dark'] .footer-section a {
+  color: var(--text-secondary, #aaa);
+}
+
+[data-theme='dark'] .footer-section a:hover {
+  color: var(--text-primary, #fff);
+}
+
+[data-theme='dark'] .social-link {
+  background: var(--bg-tertiary, #3a3a3a);
+}
+
+[data-theme='dark'] .footer-bottom {
+  border-top-color: var(--border-color, #404040);
+  color: var(--text-secondary, #aaa);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 16px 0;
+  }
+
+  .social-links {
+    flex-wrap: wrap;
+  }
+
+  .dashboard-footer {
+    margin-top: 32px;
+  }
+}

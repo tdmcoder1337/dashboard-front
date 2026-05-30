@@ -1,0 +1,77 @@
+.products-wrapper {
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  margin-top: 20px;
+  margin-left: 80px;
+  /* background: rgba(51, 51, 195, 0.966); */
+  background: black;
+backdrop-filter: blur(10px);
+border: 1px solid rgba(255,255,255,0.1);
+}
+
+.products-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 15px;
+  color: #ffffff;
+}
+
+
+
+/* TABLE */
+.products-table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+/* HEADER */
+.products-table thead {
+    background: #f3f4f6;
+}
+
+.products-table th {
+  text-align: left;
+  padding: 12px;
+  font-size: 14px;
+  
+}
+
+
+/* BODY */
+.products-table td {
+  padding: 12px;
+  font-size: 16px;
+  color: white;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+
+/* HOVER EFFECT */
+.products-table tbody tr {
+  transition: 0.2s;
+}
+
+.products-table tbody tr:hover {
+  background: #ffffff;
+}
+
+.products-table tbody tr:hover td,
+.products-table tbody tr:hover {
+  color: #000000;
+}
+
+
+/* STATUS */
+.status-ok {
+  color: green;
+  font-weight: 600;
+}
+
+.status-low {
+  color: red;
+  font-weight: 600;
+}

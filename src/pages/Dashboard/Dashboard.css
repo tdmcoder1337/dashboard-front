@@ -1,0 +1,27 @@
+.dashboard {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  margin-left: 120px;
+}
+
+.dashboard-container {
+  flex: 1;
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 16px;
+  }
+}
+
+/* Dark Mode */
+[data-theme='dark'] .dashboard {
+  background: var(--bg-primary, #1a1a1a);
+}
+

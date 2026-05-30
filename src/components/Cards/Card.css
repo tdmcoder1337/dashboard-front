@@ -1,0 +1,81 @@
+/* Card Container */
+.card {
+  background: var(--bg-secondary, #fff);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Card Header */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-color, #e5e5e5);
+}
+
+.card-header-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.card-icon {
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+}
+
+.card-subtitle {
+  margin: 4px 0 0 0;
+  font-size: 12px;
+  color: white;
+}
+
+.card-action {
+  display: flex;
+  gap: 8px;
+}
+
+/* Card Section */
+.card-section {
+  padding: 16px 20px;
+  box-sizing: border-box;
+}
+
+.card-section:not(:last-child) {
+  border-bottom: 1px solid var(--border-color, #e5e5e5);
+}
+
+/* Dark Mode Support */
+[data-theme='dark'] .card {
+  background: var(--bg-secondary, #2a2a2a);
+}
+
+[data-theme='dark'] .card-title {
+  color: var(--text-primary, #fff);
+}
+
+[data-theme='dark'] .card-subtitle {
+  color: var(--text-secondary, #aaa);
+}
+
+[data-theme='dark'] .card-header,
+[data-theme='dark'] .card-section {
+  border-bottom-color: var(--border-color, #404040);
+}
