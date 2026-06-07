@@ -1,0 +1,66 @@
+.cd-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.16);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+ 
+}
+.cd-modal {
+  background: var(--bg-surface, #fff);
+  padding: 24px;
+  border-radius: 20px;
+  width: 92%;
+  max-width: 720px;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+  position: relative;
+  animation: cd-fade-up .22s ease;
+  border: 1px solid rgba(229, 231, 235, 0.9);
+
+}
+@keyframes cd-fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.cd-close {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  border: none;
+  background: transparent;
+  font-size: 24px;
+  color: var(--text-secondary, #4b5563);
+  cursor: pointer;
+}
+.cd-image {
+  width: 100%;
+  max-height: 260px;
+  object-fit: cover;
+  border-radius: 16px;
+  margin-bottom: 18px;
+}
+.cd-title {
+  margin-top: 0;
+  color: var(--text-primary, #111827);
+  font-size: 24px;
+  letter-spacing: 0.01em;
+}
+.cd-desc {
+  color: #334155;
+  margin-bottom: 14px;
+  line-height: 1.75;
+  font-size: 15px;
+}
+.cd-value,
+.cd-oldprice,
+.cd-meta {
+  margin: 10px 0;
+  color: #0f172a;
+  font-size: 15px;
+}
+.cd-oldprice {
+  color: #64748b;
+  text-decoration: line-through;
+}

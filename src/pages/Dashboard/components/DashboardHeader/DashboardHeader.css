@@ -14,14 +14,13 @@
   margin: 0;
   font-size: 32px;
   font-weight: 700;
-  color: white;
-
+  color: var(--text-primary, #0f172a);
 }
 
 .header-subtitle {
   margin: 8px 0 0 0;
   font-size: 14px;
-  color: white;
+  color: var(--text-secondary, #475569);
 }
 
 .header-actions {
@@ -52,7 +51,7 @@
 .auth-user {
   max-width: 180px;
   overflow: hidden;
-  color: #5eead4;
+  color: #0f172a;
   font-size: 14px;
   font-weight: 700;
   text-overflow: ellipsis;

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   LineChart,
   Line,
@@ -9,6 +9,7 @@ import {
   ResponsiveContainer,
 } from 'recharts'
 import { Card } from '../../../../components/Cards'
+import CardDetails from '../../../../components/Cards/CardDetails'
 import './DashboardSection.css'
 
 const statsCards = [
@@ -113,6 +114,19 @@ const salesAnalytics = [
 
 
 function DashboardSection() {
+  const [selected, setSelected] = useState(null)
+  const [open, setOpen] = useState(false)
+
+  function openCard(data) {
+    setSelected(data)
+    setOpen(true)
+  }
+
+  function closeCard() {
+    setOpen(false)
+    setSelected(null)
+  }
+
   return (
     <section className="dashboard-section">
       <div className="stats-container">
@@ -125,6 +139,8 @@ function DashboardSection() {
               '--card-accent': card.accentColor,
               '--progress': `${card.progress || 0}%`,
             }}
+            onClick={openCard}
+            data={card}
           >
             <div className="stats-card-content">
               <div className="stats-card-top">
@@ -174,15 +190,15 @@ function DashboardSection() {
             <div className="chart-area">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={salesAnalytics} margin={{ top: 12, right: 16, left: -16, bottom: 0 }}>
-                  <CartesianGrid stroke="rgba(255, 255, 255, 0.06)" vertical={false} />
+                  <CartesianGrid stroke="rgba(15, 23, 42, 0.08)" vertical={false} strokeDasharray="3 3" />
                   <XAxis
                     dataKey="month"
-                    tick={{ fill: 'rgba(255, 255, 255, 0.52)', fontSize: 11 }}
+                    tick={{ fill: '#475569', fontSize: 11 }}
                     axisLine={false}
                     tickLine={false}
                   />
                   <YAxis
-                    tick={{ fill: 'rgba(255, 255, 255, 0.52)', fontSize: 11 }}
+                    tick={{ fill: '#475569', fontSize: 11 }}
                     axisLine={false}
                     tickLine={false}
                   />
@@ -238,7 +254,11 @@ function DashboardSection() {
           </div>
         </div>
       </Card>
+      <CardDetails open={open} data={selected} onClose={closeCard} />
+
+      
     </section>
+
   )
 }
 

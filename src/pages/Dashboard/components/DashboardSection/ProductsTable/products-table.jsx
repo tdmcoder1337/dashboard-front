@@ -1,66 +1,68 @@
-import "./products.css";
+import { useEffect, useState } from 'react'
+import { productsApi } from '../../../../../services/api'
+import './products.css'
 
+const priceFormatter = new Intl.NumberFormat('uz-UZ')
 
-const mahsulotlar = [
-    { id: 1, nomi: "iPhone 15", narx: 1200, sotildi: 34, ombor: 10 },
-    { id: 2, nomi: "Samsung S24", narx: 1000, sotildi: 22, ombor: 5 },
-    { id: 3, nomi: "MacBook M3", narx: 2200, sotildi: 12, ombor: 2 },
-    { id: 4, nomi: "AirPods Pro", narx: 250, sotildi: 80, ombor: 25 },
-    { id: 5, nomi: "iPad Pro", narx: 900, sotildi: 18, ombor: 8 },
-    { id: 6, nomi: "Google Pixel 8", narx: 850, sotildi: 15, ombor: 4 },
-    { id: 7, nomi: "Sony WH-1000XM5", narx: 350, sotildi: 40, ombor: 12 },
-    { id: 8, nomi: "Dell XPS 13", narx: 1500, sotildi: 10, ombor: 3 },
-    { id: 9, nomi: "Amazon Echo", narx: 100, sotildi: 60, ombor: 20 },
-    { id: 10, nomi: "Fitbit Charge 5", narx: 180, sotildi: 25, ombor: 6 },
-];
+function ProductsTable() {
+  const [products, setProducts] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState('')
 
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const { data } = await productsApi.getAll()
+        setProducts(data)
+      } catch {
+        setError('Mahsulotlarni yuklashda xatolik yuz berdi')
+      } finally {
+        setIsLoading(false)
+      }
+    }
 
-function products() {
-    return (
-        <div>
-            <div className="products-wrapper">
-                <h2 className="products-title">📦 Mahsulotlar sotuvi</h2>
+    loadProducts()
+  }, [])
 
-                <table className="products-table">
-                    <thead>
-                        <tr >
-                            <th>Mahsulot |</th>
-                            <th>Narx |</th>
-                            <th>Sotilgan |</th>
-                            <th>Umumiy tushum |</th>
-                            <th>Holat |</th>
-                        </tr>
-                    </thead>
+  return (
+    <div className="products-wrapper">
+      <div className="products-header">
+        <h2 className="products-title">Mahsulotlar sotuvi</h2>
+        <span>{products.length} ta mahsulot</span>
+      </div>
 
-                    <tbody>
-                        {mahsulotlar.map((m) => {
-                            const tushum = m.narx * m.sotildi;
+      {isLoading ? <p className="products-state">Yuklanmoqda...</p> : null}
+      {error ? <p className="products-error">{error}</p> : null}
 
-                            return (
-                                <tr key={m.id} className="column">
-                                   <td>{m.nomi}</td>
-                                        <td>${m.narx}</td>
-                                        <td>{m.sotildi} ta</td>
-                                        <td>${tushum}</td>
+      {!isLoading && !error ? (
+        <>
+          <table className="products-table">
+            <thead>
+              <tr>
+                <th>Mahsulot</th>
+                <th>Narx</th>
+                <th>Birlik</th>
+              </tr>
+            </thead>
 
-                                    <td>
-                                        {m.ombor < 5 ? (
-                                            <span className="status-low">Kam qolgan</span>
-                                        ) : (
-                                            <span className="status-ok">Yetarli</span>
-                                        )}
-                                    </td>
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
-            </div>
-            );
+            <tbody>
+              {products.map((product) => (
+                <tr key={product._id}>
+                  <td>{product.nomi}</td>
+                  <td>{priceFormatter.format(product.narxi)} so'm</td>
+                  <td>{product.birlik}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
 
-        </div>
-    )
+          {products.length === 0 ? (
+            <p className="products-state">Mahsulotlar hali yo'q</p>
+          ) : null}
+        </>
+      ) : null}
+    </div>
+  )
 }
 
-
-export default products
+export default ProductsTable
