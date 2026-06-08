@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FaHeart, FaList, FaSearch, FaShoppingCart, FaStar, FaThLarge, FaRegHeart } from 'react-icons/fa'
 import { productsApi } from '../../services/api'
+import { ALL_CATEGORY, PRODUCT_CATEGORIES, getProductCategory } from '../../data/categories'
 import { useCart } from '../../context/CartContext'
 import { useWishlist } from '../../context/WishlistContext'
 import './products.css'
@@ -96,6 +97,7 @@ function Products() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
   const [searchValue, setSearchValue] = useState('')
+  const [activeCategory, setActiveCategory] = useState(ALL_CATEGORY)
   const navigate = useNavigate()
   const { cartCount, addToCart } = useCart()
   const { wishlistCount, toggleWishlist, isInWishlist } = useWishlist()
@@ -118,12 +120,14 @@ function Products() {
   const filteredProducts = useMemo(() => {
     const search = normalizeName(searchValue)
 
-    if (!search) {
-      return products
-    }
+    return products.filter((product) => {
+      const matchesSearch = !search || normalizeName(product.nomi).includes(search)
+      const matchesCategory =
+        activeCategory === ALL_CATEGORY || getProductCategory(product) === activeCategory
 
-    return products.filter((product) => normalizeName(product.nomi).includes(search))
-  }, [products, searchValue])
+      return matchesSearch && matchesCategory
+    })
+  }, [products, searchValue, activeCategory])
 
 
 
@@ -179,6 +183,21 @@ function Products() {
               <FaList />
             </button>
           </div>
+        </div>
+
+        <div className="products-categories" role="tablist" aria-label="Kategoriyalar">
+          {[ALL_CATEGORY, ...PRODUCT_CATEGORIES].map((category) => (
+            <button
+              key={category}
+              type="button"
+              role="tab"
+              aria-selected={activeCategory === category}
+              className={`products-category${activeCategory === category ? ' is-active' : ''}`}
+              onClick={() => setActiveCategory(category)}
+            >
+              {category}
+            </button>
+          ))}
         </div>
 
         {isLoading ? <p className="products-state">Yuklanmoqda...</p> : null}
