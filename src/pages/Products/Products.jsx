@@ -99,6 +99,7 @@ function Products() {
   const navigate = useNavigate()
   const { cartCount, addToCart } = useCart()
   const { wishlistCount, toggleWishlist, isInWishlist } = useWishlist()
+  const [selectedCategory, setSelectedCategory] = useState("Barchasi");
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -114,16 +115,19 @@ function Products() {
 
     loadProducts()
   }, [])
-
   const filteredProducts = useMemo(() => {
-    const search = normalizeName(searchValue)
+    const search = normalizeName(searchValue);
 
-    if (!search) {
-      return products
-    }
-
-    return products.filter((product) => normalizeName(product.nomi).includes(search))
-  }, [products, searchValue])
+    return products
+      .filter((product) => {
+        if (selectedCategory === "Barchasi") return true;
+        return product.category === selectedCategory;
+      })
+      .filter((product) => {
+        if (!search) return true;
+        return normalizeName(product.nomi).includes(search);
+      });
+  }, [products, searchValue, selectedCategory]);
 
 
 
@@ -134,9 +138,8 @@ function Products() {
     <div className="products">
       <header className="products-topbar">
         <div>
-          <h1>Dashboard</h1>
-          <p>Xush kelibsiz! Bu yerda sizning statistikalar joylashtiriladi</p>
-        </div>
+          <h1>Mahsulotlar</h1>
+                 </div>
 
         <label className="products-search">
           <span className="sr-only">Mahsulot qidirish</span>
@@ -181,126 +184,155 @@ function Products() {
           </div>
         </div>
 
+        <div className="category-buttons">
+          <button onClick={() => setSelectedCategory("Barchasi")}
+            className={selectedCategory === "Barchasi" ? "active" : ""}>
+            Barchasi
+          </button>
+
+          <button onClick={() => setSelectedCategory("mevalar")}
+            className={selectedCategory === "mevalar" ? "active" : ""}>
+            Mevalar
+          </button>
+
+          <button onClick={() => setSelectedCategory("ichimliklar")}
+            className={selectedCategory === "ichimliklar" ? "active" : ""}>
+            Ichimliklar
+          </button>
+
+          <button onClick={() => setSelectedCategory("oziq-ovqat")}
+            className={selectedCategory === "oziq-ovqat" ? "active" : ""}>
+            Oziq-ovqat
+          </button>
+          <button onClick={() => setSelectedCategory("poliz-ekinlari")}
+            className={selectedCategory === "poliz-ekinlari" ? "active" : ""}>
+            Poliz ekinlari
+          </button>
+        </div>
+
+
         {isLoading ? <p className="products-state">Yuklanmoqda...</p> : null}
         {error ? <p className="products-error">{error}</p> : null}
 
-        {!isLoading && !error ? (
-          filteredProducts.length > 0 ? (
-            <div className="products-grid">
-              {filteredProducts.map((product) => {
-                const productName = normalizeName(product.nomi)
-                const meta = productMeta[productName] || {}
-                const imageSrc =
-                  product.rasm ||
-                  product.image ||
-                  product.imageUrl ||
-                  productImages[productName] ||
-                  ''
+        {
+          !isLoading && !error ? (
+            filteredProducts.length > 0 ? (
+              <div className="products-grid">
+                {filteredProducts.map((product) => {
+                  const productName = normalizeName(product.nomi)
+                  const meta = productMeta[productName] || {}
+                  const imageSrc =
+                    product.rasm ||
+                    product.image ||
+                    product.imageUrl ||
+                    productImages[productName] ||
+                    ''
 
-                return (
-                  <article
-                    className="product-card"
-                    key={product._id}
-                    onClick={() => navigate(`/products/${product._id}`, {
-                      state: {
-                        product: {
-                          title: product.nomi,
-                          subtitle: product.haqida,
-                          haqida: product.haqida,
-                          image: imageSrc,
-                          price: Number(product.narxi) || 0,
-                          oldPrice: meta.oldPrice || null,
-                          discount: meta.discount,
-                          rating: meta.rating || '4.7',
-                          sold: meta.sold || 80,
-                          id: product._id,
-                          birlik: product.birlik,
-                        },
-                      },
-                    })}
-                    role="button"
-                    tabIndex={0}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault()
-                        navigate(`/products/${product._id}`, {
-                          state: {
-                            product: {
-                              title: product.nomi,
-                              subtitle: product.haqida,
-                              haqida: product.haqida,
-                              image: imageSrc,
-                              price: Number(product.narxi) || 0,
-                              oldPrice: meta.oldPrice || null,
-                              discount: meta.discount,
-                              rating: meta.rating || '4.7',
-                              sold: meta.sold || 80,
-                              id: product._id,
-                              birlik: product.birlik,
-                            },
+                  return (
+                    <article
+                      className="product-card"
+                      key={product._id}
+                      onClick={() => navigate(`/products/${product._id}`, {
+                        state: {
+                          product: {
+                            title: product.nomi,
+                            subtitle: product.haqida,
+                            haqida: product.haqida,
+                            image: imageSrc,
+                            price: Number(product.narxi) || 0,
+                            oldPrice: meta.oldPrice || null,
+                            discount: meta.discount,
+                            rating: meta.rating || '4.7',
+                            sold: meta.sold || 80,
+                            id: product._id,
+                            birlik: product.birlik,
                           },
-                        })
-                      }
-                    }}
-                  >
-                    <div className="product-card__image">
-                      {meta.discount ? <span className="product-card__discount">{meta.discount}</span> : null}
-                      <button
-                        className="product-card__favorite"
-                        type="button"
-                        aria-label="Sevimlilarga qo'shish"
-                        onClick={(event) => {
-                          event.stopPropagation()
-                          toggleWishlist(product)
-                        }}
-                        style={{ color: isInWishlist(product._id) ? '#ef4444' : '#475569' }}
-                      >
-                        {isInWishlist(product._id) ? <FaHeart /> : <FaRegHeart />}
-                      </button>
-                      {imageSrc ? (
-                        <img src={imageSrc} alt={product.nomi} />
-                      ) : (
-                        <span>Rasm yo'q</span>
-                      )}
-                    </div>
-
-                    <div className="product-card__content">
-                      <h3>{product.nomi}</h3>
-                      <div className="product-card__rating">
-                        <FaStar />
-                        <span>{meta.rating || '4.7'}</span>
-                        <small>({meta.sold || 80} ta)</small>
-                      </div>
-                      <p>{product.haqida || 'Sifatli va xaridorgir mahsulot.'}</p>
-                      <div className="product-card__footer">
-                        <div className="product-card__prices">
-                          <strong>{priceFormatter.format(product.narxi)} so'm</strong>
-                          {meta.oldPrice ? <del>{priceFormatter.format(meta.oldPrice)} so'm</del> : null}
-                        </div>
+                        },
+                      })}
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault()
+                          navigate(`/products/${product._id}`, {
+                            state: {
+                              product: {
+                                title: product.nomi,
+                                subtitle: product.haqida,
+                                haqida: product.haqida,
+                                image: imageSrc,
+                                price: Number(product.narxi) || 0,
+                                oldPrice: meta.oldPrice || null,
+                                discount: meta.discount,
+                                rating: meta.rating || '4.7',
+                                sold: meta.sold || 80,
+                                id: product._id,
+                                birlik: product.birlik,
+                              },
+                            },
+                          })
+                        }
+                      }}
+                    >
+                      <div className="product-card__image">
+                        {meta.discount ? <span className="product-card__discount">{meta.discount}</span> : null}
                         <button
-                          className="product-card__cart"
+                          className="product-card__favorite"
                           type="button"
-                          aria-label="Savatga qo'shish"
+                          aria-label="Sevimlilarga qo'shish"
                           onClick={(event) => {
                             event.stopPropagation()
-                            addToCart(product)
+                            toggleWishlist(product)
                           }}
+                          style={{ color: isInWishlist(product._id) ? '#ef4444' : '#475569' }}
                         >
-                          <FaShoppingCart />
+                          {isInWishlist(product._id) ? <FaHeart /> : <FaRegHeart />}
                         </button>
+                        {imageSrc ? (
+                          <img src={imageSrc} alt={product.nomi} />
+                        ) : (
+                          <span>Rasm yo'q</span>
+                        )}
                       </div>
-                    </div>
-                  </article>
-                )
-              })}
-            </div>
-          ) : (
-            <p className="products-state">Mahsulotlar topilmadi</p>
-          )
-        ) : null}
 
-      </section>
-    </div>
+                      <div className="product-card__content">
+                        <h3>{product.nomi}</h3>
+                        <div className="product-card__rating">
+                          <FaStar />
+                          <span>{meta.rating || '4.7'}</span>
+                          <small>({meta.sold || 80} ta)</small>
+                        </div>
+                        <p>{product.haqida || 'Sifatli va xaridorgir mahsulot.'}</p>
+                        <div className="product-card__footer">
+                          <div className="product-card__prices">
+                            <strong>{priceFormatter.format(product.narxi)} so'm</strong>
+                            {meta.oldPrice ? <del>{priceFormatter.format(meta.oldPrice)} so'm</del> : null}
+                          </div>
+                          <button
+                            className="product-card__cart"
+                            type="button"
+                            aria-label="Savatga qo'shish"
+                            onClick={(event) => {
+                              event.stopPropagation()
+                              addToCart(product)
+                            }}
+                          >
+                            <FaShoppingCart />
+                          </button>
+                        </div>
+                      </div>
+                    </article>
+                  )
+                })}
+              </div>
+            ) : (
+              <p className="products-state">Mahsulotlar topilmadi</p>
+            )
+          ) : null
+        }
+
+      </section >
+    </div >
   )
 }
 
