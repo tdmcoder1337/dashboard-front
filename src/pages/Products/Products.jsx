@@ -139,7 +139,7 @@ function Products() {
     <div className="products">
       <header className="products-topbar">
         <div>
-          <h1>Mahsulotlar</h1>
+          <h1>Mahsulotlar dev branch ishi</h1>
         </div>
 
         <label className="products-search">
