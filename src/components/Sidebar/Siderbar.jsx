@@ -1,6 +1,7 @@
 import { useNavigate, useLocation } from 'react-router-dom';
-import { FaBriefcase, FaChevronDown, FaUserCircle } from 'react-icons/fa';
+import { FaBriefcase, FaChevronDown } from 'react-icons/fa';
 import { useAuth } from '../../context/AuthContext';
+import AccountAvatar from '../AccountAvatar/AccountAvatar';
 import { sidebarData } from './SidebarData';
 import './Sidebar.css';
 
@@ -8,6 +9,7 @@ function Siderbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
+  const accountName = user?.name || user?.username || 'Admin';
 
   const handleItemClick = (path) => {
     navigate(path);
@@ -36,9 +38,9 @@ function Siderbar() {
       </nav>
 
       <button className="sidebar-account" type="button" onClick={() => handleItemClick('/settings')}>
-        <FaUserCircle className="sidebar-account-avatar" />
+        <AccountAvatar className="sidebar-account-avatar" src={user?.avatar} name={accountName} />
         <span className="sidebar-account-info">
-          <strong>{user?.username || 'Admin'}</strong>
+          <strong>{accountName}</strong>
           <small>{user?.email || 'admin@gmail.com'}</small>
         </span>
         <FaChevronDown className="sidebar-account-chevron" />

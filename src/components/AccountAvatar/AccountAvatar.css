@@ -1,0 +1,17 @@
+.account-avatar {
+  display: inline-grid;
+  width: var(--avatar-size, 38px);
+  height: var(--avatar-size, 38px);
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.account-avatar-initial {
+  background: linear-gradient(135deg, #2563eb, #16a34a);
+  color: #ffffff;
+  font-size: calc(var(--avatar-size, 38px) * 0.42);
+  font-weight: 900;
+  line-height: 1;
+}

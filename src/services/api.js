@@ -17,4 +17,11 @@ export const productsApi = {
   create: (payload) => api.post('/products', payload),
 }
 
+export const usersApi = {
+  getAll: () => api.get('/users'),
+  create: (payload) => api.post('/users', payload),
+  update: (id, payload) => api.patch(`/users/${id}`, payload),
+  remove: (id) => api.delete(`/users/${id}`),
+}
+
 export default api

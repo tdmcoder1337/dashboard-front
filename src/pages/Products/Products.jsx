@@ -17,6 +17,7 @@ import Guruch from '../../assets/products-image/Guruch.png'
 import Suv from '../../assets/products-image/Suv.png'
 
 
+import Carousel from './components/Carusel/Carousel'
 
 
 const priceFormatter = new Intl.NumberFormat('uz-UZ')
@@ -138,8 +139,8 @@ function Products() {
     <div className="products">
       <header className="products-topbar">
         <div>
-          <h1>Mahsulotlar</h1>
-                 </div>
+          <h1>Mahsulotlar Dev1 ishi</h1>
+        </div>
 
         <label className="products-search">
           <span className="sr-only">Mahsulot qidirish</span>
@@ -163,7 +164,7 @@ function Products() {
           </button>
         </div>
       </header>
-
+      <Carousel />
       <section className="products-panel">
         <div className="products-header">
           <div className="products-title">
