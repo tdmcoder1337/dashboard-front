@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import {
   LineChart,
   Line,
@@ -10,46 +10,47 @@ import {
 } from 'recharts'
 import { Card } from '../../../../components/Cards'
 import CardDetails from '../../../../components/Cards/CardDetails'
+import { useLanguage } from '../../../../context/LanguageContext'
 import './DashboardSection.css'
 
-const statsCards = [
+const buildStatsCards = (t) => [
   {
-    title: 'Foydalanuvchilar',
-    subtitle: 'Jami foydalanuvchilar',
+    title: t('dashSection.statsUsers'),
+    subtitle: t('dashSection.statsUsersSub'),
     icon: 'US',
     value: '1,234.00',
     change: '+12%',
-    changeLabel: "Bugungi o'zgarish",
+    changeLabel: t('dashSection.statsUsersChange'),
     accentColor: '#14b8a6',
     background: '#1f2d3d',
   },
   {
-    title: 'Daromadlar',
-    subtitle: 'Bu oy',
+    title: t('dashSection.statsRevenue'),
+    subtitle: t('dashSection.statsRevenueSub'),
     icon: '$',
     value: '$ 45,231.00',
     change: '-2.5%',
-    changeLabel: 'Oylik pasayish',
+    changeLabel: t('dashSection.statsRevenueChange'),
     accentColor: '#ef476f',
     background: '#1f2d3d',
   },
   {
-    title: 'Buyurtmalar',
-    subtitle: 'Faol buyurtmalar',
+    title: t('dashSection.statsOrders'),
+    subtitle: t('dashSection.statsOrdersSub'),
     icon: 'OR',
     value: '$ 543,23.00',
     change: '+8%',
-    changeLabel: "Bugungi o'zgarish",
+    changeLabel: t('dashSection.statsOrdersChange'),
     accentColor: '#f59e0b',
     background: '#1f2d3d',
   },
   {
-    title: 'Konversiya',
-    subtitle: "O'z muddatida",
+    title: t('dashSection.statsConversion'),
+    subtitle: t('dashSection.statsConversionSub'),
     icon: 'CV',
     value: '3.2%',
     change: '+0.5%',
-    changeLabel: 'Samaradorlik oshdi',
+    changeLabel: t('dashSection.statsConversionChange'),
     accentColor: '#ffffff',
     background: 'linear-gradient(135deg, #4f46e5 0%, #312e81 100%)',
     isConversion: true,
@@ -114,6 +115,8 @@ const salesAnalytics = [
 
 
 function DashboardSection() {
+  const { t } = useLanguage()
+  const statsCards = buildStatsCards(t)
   const [selected, setSelected] = useState(null)
   const [open, setOpen] = useState(false)
 
@@ -155,7 +158,7 @@ function DashboardSection() {
               {card.isConversion && (
                 <div
                   className="conversion-circle"
-                  aria-label={`Konversiya samaradorligi ${card.progress}%`}
+                  aria-label={t('dashSection.conversionAria', { percent: card.progress })}
                 >
                   <div className="conversion-circle-inner">
                     <span>{card.progress}%</span>
@@ -172,19 +175,19 @@ function DashboardSection() {
           <div className="analytics-card">
             <div className="analytics-header">
               <div className="analytics-title-wrap">
-                <h3>Sales Analytics</h3>
+                <h3>{t('dashSection.salesAnalytics')}</h3>
                 <div className="chart-legend">
                   <span>
                     <i className="legend-dot marketing-dot" />
-                    Marketing Sales
+                    {t('dashSection.marketingSales')}
                   </span>
                   <span>
                     <i className="legend-dot online-dot" />
-                    Online Sales
+                    {t('dashSection.onlineSales')}
                   </span>
                 </div>
               </div>
-              <button className="period-button" type="button">This Year</button>
+              <button className="period-button" type="button">{t('dashSection.thisYear')}</button>
             </div>
 
             <div className="chart-area">
@@ -233,7 +236,7 @@ function DashboardSection() {
 
           <div className="recent-sales-card">
             <div className="recent-sales-header">
-              <h3>Recent Sales</h3>
+              <h3>{t('dashSection.recentSales')}</h3>
               <button className="more-button" type="button">...</button>
             </div>
 

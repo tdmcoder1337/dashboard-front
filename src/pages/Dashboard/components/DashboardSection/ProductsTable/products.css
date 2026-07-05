@@ -97,3 +97,35 @@
   color: red;
   font-weight: 600;
 }
+
+/* Dark Mode */
+[data-theme='dark'] .products-wrapper {
+  background: var(--bg-surface);
+  border-color: var(--border-color);
+}
+
+[data-theme='dark'] .products-title,
+[data-theme='dark'] .products-table td {
+  color: var(--text-primary);
+}
+
+[data-theme='dark'] .products-state {
+  color: var(--text-muted);
+}
+
+[data-theme='dark'] .products-table thead {
+  background: var(--bg-muted);
+}
+
+[data-theme='dark'] .products-table td {
+  border-color: var(--border-color);
+}
+
+[data-theme='dark'] .products-table tbody tr:hover {
+  background: var(--bg-muted);
+}
+
+[data-theme='dark'] .products-table tbody tr:hover td,
+[data-theme='dark'] .products-table tbody tr:hover {
+  color: var(--text-primary);
+}

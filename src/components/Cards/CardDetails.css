@@ -48,7 +48,7 @@
   letter-spacing: 0.01em;
 }
 .cd-desc {
-  color: #334155;
+  color: var(--text-secondary, #334155);
   margin-bottom: 14px;
   line-height: 1.75;
   font-size: 15px;
@@ -57,10 +57,10 @@
 .cd-oldprice,
 .cd-meta {
   margin: 10px 0;
-  color: #0f172a;
+  color: var(--text-primary, #0f172a);
   font-size: 15px;
 }
 .cd-oldprice {
-  color: #64748b;
+  color: var(--text-muted, #64748b);
   text-decoration: line-through;
 }

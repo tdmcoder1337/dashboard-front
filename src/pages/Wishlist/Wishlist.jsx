@@ -1,25 +1,26 @@
 import { useNavigate } from 'react-router-dom';
 import { useWishlist } from '../../context/WishlistContext';
 import { useCart } from '../../context/CartContext';
+import { useLanguage } from '../../context/LanguageContext';
 import { FaArrowLeft, FaHeart, FaShoppingCart, FaTrash } from 'react-icons/fa';
 import './Wishlist.css';
-
-const priceFormatter = new Intl.NumberFormat('uz-UZ');
 
 export default function Wishlist() {
   const { wishlistItems, toggleWishlist } = useWishlist();
   const { addToCart } = useCart();
+  const { t, locale } = useLanguage();
   const navigate = useNavigate();
+  const priceFormatter = new Intl.NumberFormat(locale === 'ru-RU' ? 'ru-RU' : 'uz-UZ');
 
   if (wishlistItems.length === 0) {
     return (
       <div className="wishlist-page empty">
-        <button className="back-btn" onClick={() => navigate('/products')}><FaArrowLeft /> Orqaga</button>
+        <button className="back-btn" onClick={() => navigate('/products')}><FaArrowLeft /> {t('wishlist.back')}</button>
         <div className="empty-state">
           <FaHeart className="empty-icon" />
-          <h2>Sevimlilar ro'yxati bo'sh</h2>
-          <p>Siz hali hech qanday mahsulotni sevimlilarga qo'shmadingiz</p>
-          <button className="continue-shopping" onClick={() => navigate('/products')}>Mahsulotlarni ko'rish</button>
+          <h2>{t('wishlist.emptyTitle')}</h2>
+          <p>{t('wishlist.emptyText')}</p>
+          <button className="continue-shopping" onClick={() => navigate('/products')}>{t('wishlist.viewProducts')}</button>
         </div>
       </div>
     );
@@ -28,10 +29,10 @@ export default function Wishlist() {
   return (
     <div className="wishlist-page">
       <div className="wishlist-header">
-        <button className="back-btn" onClick={() => navigate('/products')}><FaArrowLeft /> Orqaga</button>
-        <h1>Sevimlilar</h1>
+        <button className="back-btn" onClick={() => navigate('/products')}><FaArrowLeft /> {t('wishlist.back')}</button>
+        <h1>{t('wishlist.title')}</h1>
       </div>
-      
+
       <div className="wishlist-grid">
         {wishlistItems.map(item => (
           <article className="wishlist-card" key={item.id}>
@@ -43,15 +44,15 @@ export default function Wishlist() {
             </div>
             <div className="wishlist-card__content">
               <h3>{item.title || item.nomi}</h3>
-              <p className="price">{priceFormatter.format(item.price || item.narxi)} so'm</p>
-              <button 
-                className="add-to-cart-btn" 
+              <p className="price">{priceFormatter.format(item.price || item.narxi)} {t('wishlist.currency')}</p>
+              <button
+                className="add-to-cart-btn"
                 onClick={() => {
                   addToCart(item);
-                  toggleWishlist(item); // remove from wishlist after adding to cart
+                  toggleWishlist(item);
                 }}
               >
-                <FaShoppingCart /> Savatga o'tkazish
+                <FaShoppingCart /> {t('wishlist.moveToCart')}
               </button>
             </div>
           </article>

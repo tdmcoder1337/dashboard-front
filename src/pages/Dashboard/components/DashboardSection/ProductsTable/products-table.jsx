@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
 import { productsApi } from '../../../../../services/api'
+import { useLanguage } from '../../../../../context/LanguageContext'
 import './products.css'
 
-const priceFormatter = new Intl.NumberFormat('uz-UZ')
-
 function ProductsTable() {
+  const { t, locale } = useLanguage()
+  const priceFormatter = new Intl.NumberFormat(locale === 'ru-RU' ? 'ru-RU' : 'uz-UZ')
   const [products, setProducts] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
@@ -15,23 +16,23 @@ function ProductsTable() {
         const { data } = await productsApi.getAll()
         setProducts(data)
       } catch {
-        setError('Mahsulotlarni yuklashda xatolik yuz berdi')
+        setError(t('dashTable.loadError'))
       } finally {
         setIsLoading(false)
       }
     }
 
     loadProducts()
-  }, [])
+  }, [t])
 
   return (
     <div className="products-wrapper">
       <div className="products-header">
-        <h2 className="products-title">Mahsulotlar sotuvi</h2>
-        <span>{products.length} ta mahsulot</span>
+        <h2 className="products-title">{t('dashTable.title')}</h2>
+        <span>{t('dashTable.itemsCount', { n: products.length })}</span>
       </div>
 
-      {isLoading ? <p className="products-state">Yuklanmoqda...</p> : null}
+      {isLoading ? <p className="products-state">{t('dashTable.loading')}</p> : null}
       {error ? <p className="products-error">{error}</p> : null}
 
       {!isLoading && !error ? (
@@ -39,9 +40,9 @@ function ProductsTable() {
           <table className="products-table">
             <thead>
               <tr>
-                <th>Mahsulot</th>
-                <th>Narx</th>
-                <th>Birlik</th>
+                <th>{t('dashTable.colProduct')}</th>
+                <th>{t('dashTable.colPrice')}</th>
+                <th>{t('dashTable.colUnit')}</th>
               </tr>
             </thead>
 
@@ -49,7 +50,7 @@ function ProductsTable() {
               {products.map((product) => (
                 <tr key={product._id}>
                   <td>{product.nomi}</td>
-                  <td>{priceFormatter.format(product.narxi)} so'm</td>
+                  <td>{priceFormatter.format(product.narxi)} {t('dashTable.currency')}</td>
                   <td>{product.birlik}</td>
                 </tr>
               ))}
@@ -57,7 +58,7 @@ function ProductsTable() {
           </table>
 
           {products.length === 0 ? (
-            <p className="products-state">Mahsulotlar hali yo'q</p>
+            <p className="products-state">{t('dashTable.empty')}</p>
           ) : null}
         </>
       ) : null}

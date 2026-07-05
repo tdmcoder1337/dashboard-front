@@ -1,13 +1,16 @@
 import { useMemo, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { FaLock, FaUser } from 'react-icons/fa'
+import LanguageSwitcher from '../../components/LanguageSwitcher/LanguageSwitcher'
 import { useAuth } from '../../context/AuthContext'
+import { useLanguage } from '../../context/LanguageContext'
 import './Auth.css'
 
 function Auth() {
   const location = useLocation()
   const navigate = useNavigate()
   const { login, register } = useAuth()
+  const { t } = useLanguage()
   const initialMode = location.pathname.includes('register') ? 'register' : 'login'
   const [mode, setMode] = useState(initialMode)
   const [form, setForm] = useState({ username: '', password: '' })
@@ -18,20 +21,20 @@ function Auth() {
     () =>
       mode === 'login'
         ? {
-            title: 'Kirish',
-            subtitle: 'Dashboard akkauntingizga xavfsiz kiring.',
-            submit: 'Kirish',
-            switchText: "Akkauntingiz yo'qmi?",
-            switchAction: "Ro'yxatdan o'tish",
+            title: t('auth.loginTitle'),
+            subtitle: t('auth.loginSubtitle'),
+            submit: t('auth.loginSubmit'),
+            switchText: t('auth.noAccount'),
+            switchAction: t('auth.registerSubmit'),
           }
         : {
-            title: "Ro'yxatdan o'tish",
-            subtitle: 'Yangi dashboard profilini bir necha soniyada yarating.',
-            submit: "Ro'yxatdan o'tish",
-            switchText: 'Akkauntingiz bormi?',
-            switchAction: 'Kirish',
+            title: t('auth.registerTitle'),
+            subtitle: t('auth.registerSubtitle'),
+            submit: t('auth.registerSubmit'),
+            switchText: t('auth.haveAccount'),
+            switchAction: t('auth.loginSubmit'),
           },
-    [mode]
+    [mode, t]
   )
 
   const changeMode = (nextMode) => {
@@ -59,7 +62,7 @@ function Auth() {
 
       navigate('/dashboard')
     } catch (requestError) {
-      setError(requestError.response?.data?.message || 'Server bilan ulanishda xatolik yuz berdi')
+      setError(requestError.response?.data?.message || t('auth.serverError'))
     } finally {
       setIsSubmitting(false)
     }
@@ -70,9 +73,13 @@ function Auth() {
       <div className="auth-shell">
         <div className="auth-panel">
           <div className="auth-heading">
-            <span className="auth-kicker">Dashboard Auth</span>
+            <span className="auth-kicker">{t('auth.kicker')}</span>
             <h1>{content.title}</h1>
             <p>{content.subtitle}</p>
+          </div>
+
+          <div className="auth-top-actions">
+            <LanguageSwitcher />
           </div>
 
           <div className="auth-toggle" aria-label="Auth mode">
@@ -81,20 +88,20 @@ function Auth() {
               type="button"
               onClick={() => changeMode('login')}
             >
-              Kirish
+              {t('auth.loginSubmit')}
             </button>
             <button
               className={mode === 'register' ? 'active' : ''}
               type="button"
               onClick={() => changeMode('register')}
             >
-              Ro'yxatdan o'tish
+              {t('auth.registerSubmit')}
             </button>
           </div>
 
           <form className="auth-form" onSubmit={handleSubmit}>
             <label className="auth-field">
-              <span>Username</span>
+              <span>{t('auth.usernameLabel')}</span>
               <div>
                 <FaUser />
                 <input
@@ -111,7 +118,7 @@ function Auth() {
             </label>
 
             <label className="auth-field">
-              <span>Password</span>
+              <span>{t('auth.passwordLabel')}</span>
               <div>
                 <FaLock />
                 <input
@@ -119,7 +126,7 @@ function Auth() {
                   minLength="6"
                   name="password"
                   onChange={handleChange}
-                  placeholder="kamida 6 belgi"
+                  placeholder={t('auth.passwordPlaceholder')}
                   required
                   type="password"
                   value={form.password}
@@ -130,7 +137,7 @@ function Auth() {
             {error ? <p className="auth-error">{error}</p> : null}
 
             <button className="auth-submit" disabled={isSubmitting} type="submit">
-              {isSubmitting ? 'Yuborilmoqda...' : content.submit}
+              {isSubmitting ? t('auth.submitting') : content.submit}
             </button>
           </form>
 
@@ -142,7 +149,7 @@ function Auth() {
           </p>
 
           <Link className="auth-back" to="/dashboard">
-            Dashboardga qaytish
+            {t('auth.backToDashboard')}
           </Link>
         </div>
       </div>

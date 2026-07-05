@@ -304,3 +304,35 @@
     height: 260px;
   }
 }
+
+/* Dark Mode */
+[data-theme='dark'] .stats-card,
+[data-theme='dark'] .analytics-card,
+[data-theme='dark'] .recent-sales-card {
+  background: var(--bg-surface);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+[data-theme='dark'] .stats-title,
+[data-theme='dark'] .stats-caption,
+[data-theme='dark'] .chart-legend span,
+[data-theme='dark'] .sale-info span {
+  color: var(--text-muted);
+}
+
+[data-theme='dark'] .stats-value,
+[data-theme='dark'] .analytics-card h3,
+[data-theme='dark'] .recent-sales-card h3,
+[data-theme='dark'] .period-button,
+[data-theme='dark'] .more-button,
+[data-theme='dark'] .sale-info p {
+  color: var(--text-primary);
+}
+
+[data-theme='dark'] .period-button,
+[data-theme='dark'] .more-button,
+[data-theme='dark'] .chart-area {
+  background: var(--bg-muted);
+  border-color: var(--border-color);
+}

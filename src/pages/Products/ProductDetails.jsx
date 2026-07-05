@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import {
   FaAppleAlt,
   FaArrowLeft,
   FaBolt,
   FaBoxOpen,
+  FaCheck,
   FaCheckCircle,
   FaChevronLeft,
   FaChevronRight,
@@ -21,7 +22,9 @@ import {
 } from 'react-icons/fa'
 import { productsApi } from '../../services/api'
 import { useCart } from '../../context/CartContext'
+import { useLanguage } from '../../context/LanguageContext'
 import { useWishlist } from '../../context/WishlistContext'
+import LanguageSwitcher from '../../components/LanguageSwitcher/LanguageSwitcher'
 import './ProductDetails.css'
 import './products.css'
 import Olma from '../../assets/products-image/Olma.png'
@@ -34,8 +37,6 @@ import Non from '../../assets/products-image/non.png'
 import Kartoshka from '../../assets/products-image/Kartoshka.png'
 import Guruch from '../../assets/products-image/Guruch.png'
 import Suv from '../../assets/products-image/Suv.png'
-
-const priceFormatter = new Intl.NumberFormat('uz-UZ')
 
 const normalizeName = (value = '') => value.trim().toLowerCase()
 
@@ -166,6 +167,8 @@ export default function ProductDetails() {
   const { id } = useParams()
   const location = useLocation()
   const navigate = useNavigate()
+  const { t, locale } = useLanguage()
+  const priceFormatter = new Intl.NumberFormat(locale === 'ru-RU' ? 'ru-RU' : 'uz-UZ')
   const [product, setProduct] = useState(() =>
     location.state?.product ? buildProductView(location.state.product) : null
   )
@@ -176,8 +179,15 @@ export default function ProductDetails() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [activeTab, setActiveTab] = useState('tavsif')
 
+  const [toasts, setToasts] = useState([])
   const { addToCart } = useCart()
   const { toggleWishlist, isInWishlist } = useWishlist()
+
+  const showToast = useCallback((productName) => {
+    const id = Date.now()
+    setToasts(prev => [...prev, { id, name: productName }])
+    setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 3000)
+  }, [])
 
   useEffect(() => {
     const loadData = async () => {
@@ -192,19 +202,19 @@ export default function ProductDetails() {
           setError('Mahsulot topilmadi')
         }
       } catch {
-        setError('Mahsulotlarni yuklashda xatolik yuz berdi')
+        setError(t('products.loadError'))
       } finally {
         setLoading(false)
       }
     }
 
     loadData()
-  }, [id])
+  }, [id, t])
 
   if (loading) {
     return (
       <div className="product-details">
-        <p className="product-details__state">Yuklanmoqda...</p>
+        <p className="product-details__state">{t('productDetails.loading')}</p>
       </div>
     )
   }
@@ -213,9 +223,9 @@ export default function ProductDetails() {
     return (
       <div className="product-details">
         <button className="product-details__back" type="button" onClick={() => navigate('/products')}>
-          <FaArrowLeft /> Orqaga
+          <FaArrowLeft /> {t('productDetails.back')}
         </button>
-        <p className="product-details__error">{error || 'Mahsulot topilmadi'}</p>
+        <p className="product-details__error">{error || t('productDetails.notFound')}</p>
       </div>
     )
   }
@@ -236,9 +246,21 @@ export default function ProductDetails() {
 
   return (
     <div className="product-details">
-      <button className="product-details__back" type="button" onClick={() => navigate('/products')}>
-        <FaArrowLeft /> Orqaga
-      </button>
+      <div className="toast-container">
+        {toasts.map(toast => (
+          <div key={toast.id} className="toast">
+            <span className="toast-icon"><FaCheck /></span>
+            <span>{t('productDetails.addedToCart', { name: toast.name })}</span>
+          </div>
+        ))}
+      </div>
+
+      <div className="product-details__topbar">
+        <button className="product-details__back" type="button" onClick={() => navigate('/products')}>
+          <FaArrowLeft /> {t('productDetails.back')}
+        </button>
+        <LanguageSwitcher />
+      </div>
 
       <div className="product-details__card">
         <div className="product-details__left">
@@ -251,7 +273,7 @@ export default function ProductDetails() {
             <button
               className="product-details__wishlist"
               type="button"
-              aria-label="Sevimlilarga qo'shish"
+              aria-label={t('productDetails.addToWishlist')}
               onClick={() => toggleWishlist(product)}
               style={{ color: isInWishlist(product.id) ? '#ef4444' : '#475569' }}
             >
@@ -261,7 +283,7 @@ export default function ProductDetails() {
               className="product-details__nav-btn product-details__nav-btn--left"
               type="button"
               onClick={handlePrevImage}
-              aria-label="Oldingi rasm"
+              aria-label={t('productDetails.prevImageAria')}
             >
               <FaChevronLeft />
             </button>
@@ -272,13 +294,13 @@ export default function ProductDetails() {
                 alt={product.title}
               />
             ) : (
-              <span className="product-details__no-image">Rasm yo'q</span>
+              <span className="product-details__no-image">{t('productDetails.noImage')}</span>
             )}
             <button
               className="product-details__nav-btn product-details__nav-btn--right"
               type="button"
               onClick={handleNextImage}
-              aria-label="Keyingi rasm"
+              aria-label={t('productDetails.nextImageAria')}
             >
               <FaChevronRight />
             </button>
@@ -291,7 +313,7 @@ export default function ProductDetails() {
                 className={`product-details__thumbnail ${idx === currentImageIndex ? 'active' : ''}`}
                 onClick={() => setCurrentImageIndex(idx)}
                 type="button"
-                aria-label={`${idx + 1}-rasmni ko'rish`}
+                aria-label={t('productDetails.thumbnailAria', { n: idx + 1 })}
               >
                 <img src={img} alt={`${product.title} ${idx + 1}`} />
               </button>
@@ -309,45 +331,47 @@ export default function ProductDetails() {
                 <FaStar key={i} className={i < Math.round(Number(product.rating)) ? 'filled' : ''} />
               ))}
             </div>
-            <span className="product-details__rating-text">{product.rating} ({product.sold} sotilgan)</span>
+            <span className="product-details__rating-text">
+              {t('productDetails.soldCount', { rating: product.rating, sold: product.sold })}
+            </span>
           </div>
 
           <div className="product-details__price-section">
             <div className="product-details__price-main">
               <span className="product-details__price">
-                {product.price ? priceFormatter.format(product.price) : '—'} so'm
+                {product.price ? priceFormatter.format(product.price) : '—'} {t('products.currency')}
               </span>
               {product.discount && <span className="product-details__discount-badge">{product.discount}</span>}
             </div>
-            {product.oldPrice && <p className="product-details__oldprice">{priceFormatter.format(product.oldPrice)} so'm</p>}
+            {product.oldPrice && <p className="product-details__oldprice">{priceFormatter.format(product.oldPrice)} {t('products.currency')}</p>}
           </div>
 
           <div className="product-details__info-grid">
             <div className="info-card">
               <div className="info-icon"><FaThLarge /></div>
               <div className="info-text">
-                <p className="info-label">Kategoriya</p>
+                <p className="info-label">{t('productDetails.category')}</p>
                 <p className="info-value">{product.category}</p>
               </div>
             </div>
             <div className="info-card">
               <div className="info-icon"><FaWeightHanging /></div>
               <div className="info-text">
-                <p className="info-label">Og'irligi</p>
+                <p className="info-label">{t('productDetails.weight')}</p>
                 <p className="info-value">{product.weight}</p>
               </div>
             </div>
             <div className="info-card">
               <div className="info-icon"><FaMapMarkerAlt /></div>
               <div className="info-text">
-                <p className="info-label">Kelib chiqishi</p>
+                <p className="info-label">{t('productDetails.origin')}</p>
                 <p className="info-value">{product.location}</p>
               </div>
             </div>
             <div className="info-card">
               <div className="info-icon"><FaBoxOpen /></div>
               <div className="info-text">
-                <p className="info-label">Mavjud</p>
+                <p className="info-label">{t('productDetails.available')}</p>
                 <p className="info-value">{product.delivery}</p>
               </div>
             </div>
@@ -355,7 +379,7 @@ export default function ProductDetails() {
 
           <div className="product-details__purchase-row">
             <div className="product-details__quantity">
-              <label>Miqdor:</label>
+              <label>{t('productDetails.quantity')}</label>
               <div className="quantity-control">
                 <button className="qty-btn" onClick={() => handleQuantityChange(-1)} type="button">−</button>
                 <input type="number" value={quantity} readOnly className="qty-input" />
@@ -366,19 +390,19 @@ export default function ProductDetails() {
             <button className="product-details__buy" type="button" onClick={() => {
               for(let i=0; i<quantity; i++) addToCart(product);
             }}>
-              <FaShoppingCart /> Savatga qo'shish
+              <FaShoppingCart /> {t('productDetails.addToCart')}
             </button>
           </div>
 
           <div className="product-details__actions">
             <button className="product-details__favorite" type="button" onClick={() => toggleWishlist(product)}>
-              {isInWishlist(product.id) ? <FaHeart color="#ef4444" /> : <FaRegHeart />} Sevimlilarga qo'shish
+              {isInWishlist(product.id) ? <FaHeart color="#ef4444" /> : <FaRegHeart />} {t('productDetails.addToWishlist')}
             </button>
             <button className="product-details__delivery" type="button" onClick={() => {
               for(let i=0; i<quantity; i++) addToCart(product);
               navigate('/cart');
             }}>
-              <FaBolt /> Hozir sotib olish
+              <FaBolt /> {t('productDetails.buyNow')}
             </button>
           </div>
         </div>
@@ -391,21 +415,21 @@ export default function ProductDetails() {
             className={`product-info-section__tab ${activeTab === 'tavsif' ? 'active' : ''}`}
             onClick={() => setActiveTab('tavsif')}
           >
-            <FaBoxOpen /> Tavsif
+            <FaBoxOpen /> {t('productDetails.tabDescription')}
           </button>
           <button
             type="button"
             className={`product-info-section__tab ${activeTab === 'xususiyatlar' ? 'active' : ''}`}
             onClick={() => setActiveTab('xususiyatlar')}
           >
-            <FaListUl /> Xususiyatlar
+            <FaListUl /> {t('productDetails.tabFeatures')}
           </button>
           <button
             type="button"
             className={`product-info-section__tab ${activeTab === 'sharhlar' ? 'active' : ''}`}
             onClick={() => setActiveTab('sharhlar')}
           >
-            <FaCommentAlt /> Sharhlar (24)
+            <FaCommentAlt /> {t('productDetails.tabReviews')}
           </button>
         </div>
 
@@ -422,10 +446,10 @@ export default function ProductDetails() {
 
             {activeTab === 'xususiyatlar' && (
               <ul className="product-info-section__features">
-                <li><FaCheckCircle /> Kategoriya: {product.category}</li>
-                <li><FaCheckCircle /> Og'irligi: {product.weight}</li>
-                <li><FaCheckCircle /> Kelib chiqishi: {product.location}</li>
-                <li><FaCheckCircle /> Mavjudligi: {product.delivery}</li>
+                <li><FaCheckCircle /> {t('productDetails.featureCategory', { value: product.category })}</li>
+                <li><FaCheckCircle /> {t('productDetails.featureWeight', { value: product.weight })}</li>
+                <li><FaCheckCircle /> {t('productDetails.featureOrigin', { value: product.location })}</li>
+                <li><FaCheckCircle /> {t('productDetails.featureAvailable', { value: product.delivery })}</li>
               </ul>
             )}
 
@@ -433,18 +457,18 @@ export default function ProductDetails() {
               <div className="product-info-section__reviews">
                 <div className="product-info-section__review">
                   <div className="product-info-section__review-header">
-                    <strong>Aziza K.</strong>
+                    <strong>{t('productDetails.review1Author')}</strong>
                     <div className="product-info-section__review-stars">
                       {[...Array(5)].map((_, i) => (
                         <FaStar key={i} className="filled" />
                       ))}
                     </div>
                   </div>
-                  <p>Juda sifatli mahsulot, tez yetkazib berishdi. Tavsiya qilaman!</p>
+                  <p>{t('productDetails.review1Text')}</p>
                 </div>
                 <div className="product-info-section__review">
                   <div className="product-info-section__review-header">
-                    <strong>Jamshid R.</strong>
+                    <strong>{t('productDetails.review2Author')}</strong>
                     <div className="product-info-section__review-stars">
                       {[...Array(4)].map((_, i) => (
                         <FaStar key={i} className="filled" />
@@ -452,7 +476,7 @@ export default function ProductDetails() {
                       <FaStar />
                     </div>
                   </div>
-                  <p>Narxiga nisbatan juda yaxshi sifat. Yana buyurtma beraman.</p>
+                  <p>{t('productDetails.review2Text')}</p>
                 </div>
               </div>
             )}
@@ -460,12 +484,12 @@ export default function ProductDetails() {
 
           <div className="product-info-section__why">
             <div className="product-info-section__why-content">
-              <h3>Nega aynan bizning {product.title.toLowerCase()}?</h3>
+              <h3>{t('productDetails.whyUs', { title: product.title.toLowerCase() })}</h3>
               <ul>
-                <li><FaCheckCircle /> 100% tabiiy mahsulot</li>
-                <li><FaCheckCircle /> Kimyoviy moddalarsiz</li>
-                <li><FaCheckCircle /> Yangi terilgan</li>
-                <li><FaCheckCircle /> Sifat kafolati</li>
+                <li><FaCheckCircle /> {t('productDetails.whyNatural')}</li>
+                <li><FaCheckCircle /> {t('productDetails.whyNoChemicals')}</li>
+                <li><FaCheckCircle /> {t('productDetails.whyFresh')}</li>
+                <li><FaCheckCircle /> {t('productDetails.whyQuality')}</li>
               </ul>
             </div>
             {product.images.length > 0 && (
@@ -481,34 +505,67 @@ export default function ProductDetails() {
 
       {allProducts.length > 0 && (
         <div className="related-products">
-          <h2>O'xshash mahsulotlar</h2>
+          <h2>{t('productDetails.relatedProducts')}</h2>
           <div className="products-grid">
             {allProducts
               .filter(p => (p._id || p.id) !== product.id)
               .slice(0, 5)
               .map(p => {
-                const pv = buildProductView(p);
+                const pv = buildProductView(p)
                 return (
-                  <article className="product-card" key={pv.id} onClick={() => navigate(`/products/${pv.id}`, { state: { product: p } })}>
-                    <div className="product-card__image">
-                      {pv.discount ? <span className="product-card__discount">{pv.discount}</span> : null}
-                      <button className="product-card__favorite" type="button" onClick={(e) => { e.stopPropagation(); toggleWishlist(pv); }} style={{ color: isInWishlist(pv.id) ? '#ef4444' : '#475569' }}>
-                        {isInWishlist(pv.id) ? <FaHeart /> : <FaRegHeart />}
-                      </button>
-                      {pv.images.length > 0 ? <img src={pv.images[0]} alt={pv.title} /> : <span>Rasm yo'q</span>}
-                    </div>
-                    <div className="product-card__content">
-                      <h3>{pv.title}</h3>
-                      <div className="product-card__rating"><FaStar /><span>{pv.rating}</span></div>
-                      <div className="product-card__footer">
-                        <div className="product-card__prices">
-                          <strong>{priceFormatter.format(pv.price)} so'm</strong>
+                  <article className="product-card" key={pv.id}>
+                    <div
+                      className="product-card__clickable"
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => navigate(`/products/${pv.id}`, { state: { product: p } })}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault()
+                          navigate(`/products/${pv.id}`, { state: { product: p } })
+                        }
+                      }}
+                    >
+                      <div className="product-card__image">
+                        {pv.discount ? <span className="product-card__discount">{pv.discount}</span> : null}
+                        <button
+                          className="product-card__favorite"
+                          type="button"
+                          onClick={(e) => { e.stopPropagation(); toggleWishlist(pv) }}
+                          style={{ color: isInWishlist(pv.id) ? '#ef4444' : '#94a3b8' }}
+                        >
+                          {isInWishlist(pv.id) ? <FaHeart /> : <FaRegHeart />}
+                        </button>
+                        {pv.images.length > 0
+                          ? <img src={pv.images[0]} alt={pv.title} />
+                          : <span className="product-card__no-image">{t('productDetails.noImage')}</span>}
+                      </div>
+
+                      <div className="product-card__body">
+                        <div className="product-card__rating">
+                          <FaStar />
+                          <span>{pv.rating}</span>
+                          <small>{t('products.ratingCount', { n: pv.sold })}</small>
                         </div>
-                        <button className="product-card__cart" type="button" onClick={(e) => { e.stopPropagation(); addToCart(pv); }}><FaShoppingCart /></button>
+                        <h3 className="product-card__title">{pv.title}</h3>
+                        <div className="product-card__prices">
+                          <strong>{priceFormatter.format(pv.price)} {t('products.currency')}</strong>
+                          {pv.oldPrice ? <del>{priceFormatter.format(pv.oldPrice)} {t('products.currency')}</del> : null}
+                        </div>
                       </div>
                     </div>
+
+                    <div className="product-card__footer">
+                      <button
+                        className="product-card__add-btn"
+                        type="button"
+                        onClick={() => { addToCart(pv); showToast(pv.title) }}
+                      >
+                        <FaShoppingCart /> {t('productDetails.addToCart')}
+                      </button>
+                    </div>
                   </article>
-                );
+                )
               })}
           </div>
         </div>

@@ -139,3 +139,22 @@
 .product-card__cart:hover {
   background: linear-gradient(135deg, #a78bfa, #7c3aed);
 }
+
+/* Dark Mode */
+[data-theme='dark'] .product-card {
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+[data-theme='dark'] .product-card__image {
+  background: var(--bg-muted);
+}
+
+[data-theme='dark'] .product-card__favorite {
+  background: rgba(19, 28, 48, 0.85);
+}
+
+[data-theme='dark'] .product-card__prices del {
+  color: var(--text-muted);
+}

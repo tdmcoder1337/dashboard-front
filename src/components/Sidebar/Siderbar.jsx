@@ -1,6 +1,7 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { FaBriefcase, FaChevronDown } from 'react-icons/fa';
 import { useAuth } from '../../context/AuthContext';
+import { useLanguage } from '../../context/LanguageContext';
 import AccountAvatar from '../AccountAvatar/AccountAvatar';
 import { sidebarData } from './SidebarData';
 import './Sidebar.css';
@@ -9,6 +10,7 @@ function Siderbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
+  const { t } = useLanguage();
   const accountName = user?.name || user?.username || 'Admin';
 
   const handleItemClick = (path) => {
@@ -32,7 +34,7 @@ function Siderbar() {
             onClick={() => handleItemClick(item.path)}
           >
             <item.icon />
-            <span className="sidebar-item-text">{item.title}</span>
+            <span className="sidebar-item-text">{t(item.titleKey)}</span>
           </button>
         ))}
       </nav>

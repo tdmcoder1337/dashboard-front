@@ -85,3 +85,19 @@
 .add-to-cart-btn:hover {
   background: #1d4ed8;
 }
+
+/* Dark Mode */
+[data-theme='dark'] .wishlist-header h1,
+[data-theme='dark'] .wishlist-card__content h3 {
+  color: var(--text-primary);
+}
+
+[data-theme='dark'] .wishlist-card {
+  background: var(--bg-surface);
+  border-color: var(--border-color);
+}
+
+[data-theme='dark'] .wishlist-card__image,
+[data-theme='dark'] .wishlist-card__image .remove-btn {
+  background: var(--bg-muted);
+}

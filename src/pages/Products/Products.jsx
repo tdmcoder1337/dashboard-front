@@ -1,9 +1,11 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { FaHeart, FaList, FaSearch, FaShoppingCart, FaStar, FaThLarge, FaRegHeart } from 'react-icons/fa'
+import { FaHeart, FaList, FaSearch, FaShoppingCart, FaStar, FaThLarge, FaRegHeart, FaCheck } from 'react-icons/fa'
 import { productsApi } from '../../services/api'
 import { useCart } from '../../context/CartContext'
+import { useLanguage } from '../../context/LanguageContext'
 import { useWishlist } from '../../context/WishlistContext'
+import LanguageSwitcher from '../../components/LanguageSwitcher/LanguageSwitcher'
 import './products.css'
 import Olma from '../../assets/products-image/Olma.png'
 import Banan from '../../assets/products-image/Banan.png'
@@ -93,14 +95,22 @@ const productMeta = {
 }
 
 function Products() {
+  const { t } = useLanguage()
   const [products, setProducts] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
   const [searchValue, setSearchValue] = useState('')
+  const [toasts, setToasts] = useState([])
   const navigate = useNavigate()
   const { cartCount, addToCart } = useCart()
   const { wishlistCount, toggleWishlist, isInWishlist } = useWishlist()
-  const [selectedCategory, setSelectedCategory] = useState("Barchasi");
+  const [selectedCategory, setSelectedCategory] = useState("Barchasi")
+
+  const showToast = useCallback((productName) => {
+    const id = Date.now()
+    setToasts(prev => [...prev, { id, name: productName }])
+    setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 3000)
+  }, [])
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -108,14 +118,14 @@ function Products() {
         const { data } = await productsApi.getAll()
         setProducts(data)
       } catch {
-        setError('Mahsulotlarni yuklashda xatolik yuz berdi')
+        setError(t('products.loadError'))
       } finally {
         setIsLoading(false)
       }
     }
 
     loadProducts()
-  }, [])
+  }, [t])
   const filteredProducts = useMemo(() => {
     const search = normalizeName(searchValue);
 
@@ -137,16 +147,25 @@ function Products() {
 
   return (
     <div className="products">
+      <div className="toast-container">
+        {toasts.map(toast => (
+          <div key={toast.id} className="toast">
+            <span className="toast-icon"><FaCheck /></span>
+            <span>{t('products.addedToCart', { name: toast.name })}</span>
+          </div>
+        ))}
+      </div>
+
       <header className="products-topbar">
         <div>
-          <h1>Mahsulotlar dev branch ishi</h1>
+          <h1>{t('products.title')}</h1>
         </div>
 
         <label className="products-search">
-          <span className="sr-only">Mahsulot qidirish</span>
+          <span className="sr-only">{t('products.searchSr')}</span>
           <input
             type="search"
-            placeholder="Mahsulot qidirish..."
+            placeholder={t('products.searchPlaceholder')}
             value={searchValue}
             onChange={(event) => setSearchValue(event.target.value)}
           />
@@ -154,11 +173,12 @@ function Products() {
         </label>
 
         <div className="products-topbar-actions">
-          <button className="products-topbar-btn" aria-label="Sevimlilar" onClick={() => navigate('/wishlist')}>
+          <LanguageSwitcher />
+          <button className="products-topbar-btn" aria-label={t('products.wishlistAria')} onClick={() => navigate('/wishlist')}>
             <FaHeart />
             {wishlistCount > 0 && <span className="products-topbar-badge">{wishlistCount}</span>}
           </button>
-          <button className="products-topbar-btn" aria-label="Savatcha" onClick={() => navigate('/cart')}>
+          <button className="products-topbar-btn" aria-label={t('products.cartAria')} onClick={() => navigate('/cart')}>
             <FaShoppingCart />
             {cartCount > 0 && <span className="products-topbar-badge">{cartCount}</span>}
           </button>
@@ -171,11 +191,11 @@ function Products() {
             <span className="products-title-icon">
               <FaShoppingCart />
             </span>
-            <h2>Mahsulotlar</h2>
+            <h2>{t('products.title')}</h2>
           </div>
 
           <div className="products-tools">
-            <span>{filteredProducts.length} ta mahsulot</span>
+            <span>{t('products.itemsCount', { n: filteredProducts.length })}</span>
             <button className="products-view is-active" type="button" aria-label="Grid view">
               <FaThLarge />
             </button>
@@ -188,31 +208,31 @@ function Products() {
         <div className="category-buttons">
           <button onClick={() => setSelectedCategory("Barchasi")}
             className={selectedCategory === "Barchasi" ? "active" : ""}>
-            Barchasi
+            {t('products.categoryAll')}
           </button>
 
           <button onClick={() => setSelectedCategory("mevalar")}
             className={selectedCategory === "mevalar" ? "active" : ""}>
-            Mevalar
+            {t('products.categoryFruits')}
           </button>
 
           <button onClick={() => setSelectedCategory("ichimliklar")}
             className={selectedCategory === "ichimliklar" ? "active" : ""}>
-            Ichimliklar
+            {t('products.categoryDrinks')}
           </button>
 
           <button onClick={() => setSelectedCategory("oziq-ovqat")}
             className={selectedCategory === "oziq-ovqat" ? "active" : ""}>
-            Oziq-ovqat
+            {t('products.categoryFood')}
           </button>
           <button onClick={() => setSelectedCategory("poliz-ekinlari")}
             className={selectedCategory === "poliz-ekinlari" ? "active" : ""}>
-            Poliz ekinlari
+            {t('products.categoryMelons')}
           </button>
         </div>
 
 
-        {isLoading ? <p className="products-state">Yuklanmoqda...</p> : null}
+        {isLoading ? <p className="products-state">{t('products.loading')}</p> : null}
         {error ? <p className="products-error">{error}</p> : null}
 
         {
@@ -229,105 +249,93 @@ function Products() {
                     productImages[productName] ||
                     ''
 
+                  const navState = {
+                    product: {
+                      title: product.nomi,
+                      subtitle: product.haqida,
+                      haqida: product.haqida,
+                      image: imageSrc,
+                      price: Number(product.narxi) || 0,
+                      oldPrice: meta.oldPrice || null,
+                      discount: meta.discount,
+                      rating: meta.rating || '4.7',
+                      sold: meta.sold || 80,
+                      id: product._id,
+                      birlik: product.birlik,
+                    },
+                  }
+
                   return (
-                    <article
-                      className="product-card"
-                      key={product._id}
-                      onClick={() => navigate(`/products/${product._id}`, {
-                        state: {
-                          product: {
-                            title: product.nomi,
-                            subtitle: product.haqida,
-                            haqida: product.haqida,
-                            image: imageSrc,
-                            price: Number(product.narxi) || 0,
-                            oldPrice: meta.oldPrice || null,
-                            discount: meta.discount,
-                            rating: meta.rating || '4.7',
-                            sold: meta.sold || 80,
-                            id: product._id,
-                            birlik: product.birlik,
-                          },
-                        },
-                      })}
-                      role="button"
-                      tabIndex={0}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault()
-                          navigate(`/products/${product._id}`, {
-                            state: {
-                              product: {
-                                title: product.nomi,
-                                subtitle: product.haqida,
-                                haqida: product.haqida,
-                                image: imageSrc,
-                                price: Number(product.narxi) || 0,
-                                oldPrice: meta.oldPrice || null,
-                                discount: meta.discount,
-                                rating: meta.rating || '4.7',
-                                sold: meta.sold || 80,
-                                id: product._id,
-                                birlik: product.birlik,
-                              },
-                            },
-                          })
-                        }
-                      }}
-                    >
-                      <div className="product-card__image">
-                        {meta.discount ? <span className="product-card__discount">{meta.discount}</span> : null}
-                        <button
-                          className="product-card__favorite"
-                          type="button"
-                          aria-label="Sevimlilarga qo'shish"
-                          onClick={(event) => {
-                            event.stopPropagation()
-                            toggleWishlist(product)
-                          }}
-                          style={{ color: isInWishlist(product._id) ? '#ef4444' : '#475569' }}
-                        >
-                          {isInWishlist(product._id) ? <FaHeart /> : <FaRegHeart />}
-                        </button>
-                        {imageSrc ? (
-                          <img src={imageSrc} alt={product.nomi} />
-                        ) : (
-                          <span>Rasm yo'q</span>
-                        )}
+                    <article className="product-card" key={product._id}>
+                      <div
+                        className="product-card__clickable"
+                        onClick={() => navigate(`/products/${product._id}`, { state: navState })}
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault()
+                            navigate(`/products/${product._id}`, { state: navState })
+                          }
+                        }}
+                      >
+                        <div className="product-card__image">
+                          {meta.discount ? <span className="product-card__discount">{meta.discount}</span> : null}
+                          <button
+                            className="product-card__favorite"
+                            type="button"
+                            aria-label={t('products.addToWishlistAria')}
+                            onClick={(e) => { e.stopPropagation(); toggleWishlist(product) }}
+                            style={{ color: isInWishlist(product._id) ? '#ef4444' : '#94a3b8' }}
+                          >
+                            {isInWishlist(product._id) ? <FaHeart /> : <FaRegHeart />}
+                          </button>
+                          {imageSrc ? (
+                            <img src={imageSrc} alt={product.nomi} />
+                          ) : (
+                            <span className="product-card__no-image">{t('products.noImage')}</span>
+                          )}
+                        </div>
+
+                        <div className="product-card__body">
+                          <div className="product-card__rating">
+                            <FaStar />
+                            <span>{meta.rating || '4.7'}</span>
+                            <small>{t('products.ratingCount', { n: meta.sold || 80 })}</small>
+                          </div>
+                          <h3 className="product-card__title">{product.nomi}</h3>
+                          <div className="product-card__prices">
+                            <strong>{priceFormatter.format(product.narxi)} {t('products.currency')}</strong>
+                            {meta.oldPrice ? (
+                              <del>{priceFormatter.format(meta.oldPrice)} {t('products.currency')}</del>
+                            ) : null}
+                          </div>
+                          {product.birlik && (
+                            <span className="product-card__unit">1 {product.birlik}</span>
+                          )}
+                        </div>
                       </div>
 
-                      <div className="product-card__content">
-                        <h3>{product.nomi}</h3>
-                        <div className="product-card__rating">
-                          <FaStar />
-                          <span>{meta.rating || '4.7'}</span>
-                          <small>({meta.sold || 80} ta)</small>
-                        </div>
-                        <p>{product.haqida || 'Sifatli va xaridorgir mahsulot.'}</p>
-                        <div className="product-card__footer">
-                          <div className="product-card__prices">
-                            <strong>{priceFormatter.format(product.narxi)} so'm</strong>
-                            {meta.oldPrice ? <del>{priceFormatter.format(meta.oldPrice)} so'm</del> : null}
-                          </div>
-                          <button
-                            className="product-card__cart"
-                            type="button"
-                            aria-label="Savatga qo'shish"
-                            onClick={(event) => {
-                              event.stopPropagation()
-                              addToCart(product)
-                            }}
-                          >
-                            <FaShoppingCart />
-                          </button>
-                        </div>
+                      <div className="product-card__footer">
+                        <button
+                          className="product-card__add-btn"
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            addToCart(product)
+                            showToast(product.nomi)
+                          }}
+                        >
+                          <FaShoppingCart />
+                          {t('products.addToCart')}
+                        </button>
                       </div>
                     </article>
                   )
                 })}
               </div>
             ) : (
-              <p className="products-state">Mahsulotlar topilmadi</p>
+              <p className="products-state">{t('products.notFound')}</p>
             )
           ) : null
         }

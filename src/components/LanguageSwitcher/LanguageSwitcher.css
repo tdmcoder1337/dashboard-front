@@ -1,0 +1,31 @@
+.language-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 38px;
+  padding: 0 10px;
+  border: 1px solid var(--border-color, #e4e8f0);
+  border-radius: 8px;
+  background: var(--bg-surface, #ffffff);
+  color: var(--text-secondary, #4b5563);
+  cursor: pointer;
+}
+
+.language-switcher:hover {
+  border-color: #6d5dfc;
+  color: #4f46e5;
+}
+
+.language-switcher svg {
+  font-size: 15px;
+}
+
+.language-switcher select {
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 800;
+}
