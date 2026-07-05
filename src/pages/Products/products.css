@@ -403,6 +403,42 @@
   }
 }
 
+@media (max-width: 480px) {
+  .products {
+    padding: 12px 10px 24px;
+  }
+
+  .products .products-panel {
+    padding: 12px;
+  }
+
+  .products-topbar {
+    gap: 10px;
+  }
+
+  .products-topbar h1 {
+    font-size: 20px;
+  }
+
+  .products-search input {
+    font-size: 13px;
+    padding: 10px 12px;
+  }
+
+  .products-tools {
+    gap: 6px;
+  }
+
+  .category-buttons {
+    gap: 6px;
+  }
+
+  .category-buttons button {
+    padding: 6px 12px;
+    font-size: 11px;
+  }
+}
+
 /* ── Toast Notifications ── */
 .toast-container {
   position: fixed;

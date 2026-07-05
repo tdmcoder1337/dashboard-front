@@ -140,7 +140,7 @@
   font-size: 12px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1200px) {
   .sidebar {
     width: 82px;
     padding: 16px 12px;
@@ -168,6 +168,42 @@
     justify-content: center;
     min-height: 54px;
     padding: 8px;
+  }
+}
+
+@media (max-width: 576px) {
+  .sidebar {
+    width: 64px;
+    padding: 12px 8px;
+  }
+
+  .sidebar-brand {
+    margin-bottom: 16px;
+  }
+
+  .sidebar-brand-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+
+  .sidebar-item {
+    padding: 10px;
+    font-size: 16px;
+  }
+
+  .sidebar-item svg {
+    font-size: 16px;
+    min-width: 16px;
+  }
+
+  .sidebar-nav {
+    gap: 6px;
+  }
+
+  .sidebar-account {
+    min-height: 44px;
+    padding: 6px;
   }
 }
 

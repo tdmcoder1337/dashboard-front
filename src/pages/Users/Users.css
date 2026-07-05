@@ -677,6 +677,51 @@
     overflow-x: auto;
     padding-bottom: 2px;
   }
+
+  .users-modal {
+    width: 95%;
+    padding: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .users-page {
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+    padding: 10px;
+  }
+
+  .users-header h1 {
+    font-size: 20px;
+  }
+
+  .users-stat {
+    min-height: 80px;
+    padding: 14px;
+  }
+
+  .users-table th,
+  .users-table td {
+    padding: 8px;
+    font-size: 12px;
+  }
+
+  .users-toolbar {
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .users-search input,
+  .users-date input {
+    font-size: 13px;
+  }
+
+  .users-modal {
+    width: 98%;
+    padding: 16px;
+    margin: 10px;
+  }
 }
 
 /* Dark Mode */

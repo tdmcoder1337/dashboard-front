@@ -736,6 +736,44 @@
   }
 }
 
+@media (max-width: 480px) {
+  .messages-page {
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+    padding: 10px;
+  }
+
+  .messages-header h1 {
+    font-size: 20px;
+  }
+
+  .messages-stat {
+    min-height: 80px;
+    padding: 14px;
+  }
+
+  .messages-table th,
+  .messages-table td {
+    padding: 8px;
+    font-size: 12px;
+  }
+
+  .messages-toolbar {
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .messages-compose {
+    padding: 14px;
+  }
+
+  .messages-modal {
+    width: 98%;
+    padding: 16px;
+  }
+}
+
 /* Dark Mode */
 [data-theme='dark'] .messages-page {
   color: var(--text-primary);

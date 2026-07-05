@@ -92,6 +92,41 @@
   border-bottom-color: #374151;
 }
 
+@media (max-width: 768px) {
+  .card-header {
+    padding: 14px 16px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .card-section {
+    padding: 14px 16px;
+  }
+
+  .card-title {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .card-header {
+    padding: 12px 14px;
+  }
+
+  .card-section {
+    padding: 12px 14px;
+  }
+
+  .card-action {
+    width: 100%;
+  }
+
+  .card-action .btn {
+    flex: 1;
+  }
+}
+
 /* Modal styles */
 .modal-overlay {
   position: fixed;
@@ -101,14 +136,17 @@
   justify-content: center;
   background: rgba(15, 23, 42, 0.16);
   z-index: 1000;
+  padding: 16px;
 }
 .modal {
   background: var(--bg-surface, #fff);
   color: var(--text-primary, #111827);
   border-radius: 18px;
   padding: 24px;
-  width: 90%;
+  width: 100%;
   max-width: 680px;
+  max-height: 90vh;
+  overflow-y: auto;
   box-shadow: var(--shadow-strong);
   position: relative;
   border: 1px solid rgba(229, 231, 235, 0.9);
@@ -133,4 +171,11 @@
 .modal-value {
   font-weight: 700;
   margin: 0 0 14px 0;
+}
+
+@media (max-width: 480px) {
+  .modal {
+    padding: 18px;
+    border-radius: 14px;
+  }
 }

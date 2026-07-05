@@ -8,8 +8,6 @@
   display: grid;
   grid-template-columns: repeat(4, minmax(180px, 1fr));
   gap: 18px;
-  margin-left: 80px;
-
 }
 
 .stats-card {
@@ -140,13 +138,13 @@
   background: #ffffff;
   color: var(--text-primary, #0f172a);
   box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
-  margin-left: 80px;
 }
-.recent-sales-card {
-  margin-left: 70px;
-}
-.analytics-card {
-  width: 950px;
+
+@media (max-width: 1200px) {
+  .analytics-card,
+  .recent-sales-card {
+    padding: 20px;
+  }
 }
 
 .analytics-header,
@@ -283,14 +281,21 @@
 }
 
 @media (max-width: 1100px) {
-  .stats-container,
-  .analytics-grid {
+  .stats-container {
     grid-template-columns: repeat(2, minmax(180px, 1fr));
+  }
+
+  .analytics-grid {
+    grid-template-columns: 1fr;
   }
 }
 
 @media (max-width: 760px) {
-  .stats-container,
+  .stats-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
   .analytics-grid {
     grid-template-columns: 1fr;
   }
@@ -298,10 +303,60 @@
   .analytics-card,
   .recent-sales-card {
     min-height: auto;
+    padding: 16px;
   }
 
   .chart-area {
-    height: 260px;
+    height: 240px;
+    padding: 12px;
+  }
+
+  .stats-card-content {
+    min-height: 140px;
+    padding: 16px;
+  }
+
+  .stats-value {
+    font-size: 22px;
+  }
+
+  .analytics-header,
+  .recent-sales-header {
+    flex-direction: column;
+  }
+
+  .analytics-title-wrap {
+    gap: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-container {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .stats-card-content {
+    min-height: 120px;
+    padding: 14px;
+  }
+
+  .stats-value {
+    font-size: 20px;
+  }
+
+  .chart-area {
+    height: 200px;
+  }
+
+  .conversion-card .stats-card-content {
+    padding-right: 16px;
+  }
+
+  .conversion-circle {
+    position: static;
+    transform: none;
+    margin-top: 12px;
   }
 }
 
@@ -337,8 +392,4 @@
   border-color: var(--border-color);
 }
 
-:root[data-compact-sidebar='true'] .stats-container,
-:root[data-compact-sidebar='true'] .analytics-card,
-:root[data-compact-sidebar='true'] .recent-sales-card {
-  margin-left: 82px;
-}
+

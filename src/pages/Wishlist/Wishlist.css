@@ -3,6 +3,55 @@
   max-width: 1400px;
   margin: 0 auto;
 }
+
+@media (max-width: 768px) {
+  .wishlist-page {
+    padding: 16px;
+  }
+
+  .wishlist-header h1 {
+    font-size: 24px;
+  }
+
+  .wishlist-grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .wishlist-page {
+    padding: 10px;
+  }
+
+  .wishlist-header h1 {
+    font-size: 20px;
+  }
+
+  .wishlist-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .wishlist-card__image {
+    height: 140px;
+    padding: 12px;
+  }
+
+  .wishlist-card__content {
+    padding: 12px;
+  }
+
+  .wishlist-card__content h3 {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 360px) {
+  .wishlist-grid {
+    grid-template-columns: 1fr;
+  }
+}
 .wishlist-header h1 {
   font-size: 32px;
   color: #0f172a;
