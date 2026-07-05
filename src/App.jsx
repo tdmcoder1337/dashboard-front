@@ -5,7 +5,7 @@ import Dashboard from './pages/Dashboard/Dashboard'
 import Users from './pages/Users/Users'
 import Messages from './pages/Messages/Messages'
 import Products from './pages/Products/Products'
-import ProductDetails from './pages/Products/components/ProductDetails';
+import ProductDetails from './pages/Products/ProductDetails';
 import Settings from './pages/Settings/Settings'
 import Auth from './pages/Auth/Auth'
 import Cart from './pages/Cart/Cart'
