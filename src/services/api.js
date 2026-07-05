@@ -2,8 +2,14 @@ import axios from 'axios'
 
 const TOKEN_KEY = 'dashboard_token'
 
+let baseURL = import.meta.env.VITE_API_URL || '/api'
+
+if (baseURL !== '/api' && !baseURL.endsWith('/api')) {
+  baseURL = baseURL.replace(/\/?$/, '/api')
+}
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '/api',
+  baseURL,
   headers: {
     'Content-Type': 'application/json',
   },
