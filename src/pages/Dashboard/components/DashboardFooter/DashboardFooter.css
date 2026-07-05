@@ -114,6 +114,10 @@
   color: var(--text-secondary, #aaa);
 }
 
+:root[data-compact-sidebar='true'] .dashboard-footer {
+  margin-left: 82px;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .footer-content {

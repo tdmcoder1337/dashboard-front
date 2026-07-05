@@ -1,15 +1,30 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import {
+  FaAdjust,
+  FaCalendarAlt,
   FaCamera,
+  FaChevronRight,
   FaCheck,
+  FaCheckCircle,
+  FaClock,
+  FaCog,
+  FaCompressAlt,
+  FaDesktop,
+  FaFont,
+  FaGlobe,
   FaLock,
+  FaMagic,
+  FaMapMarkerAlt,
   FaMoon,
   FaPalette,
   FaPlus,
+  FaRegSave,
+  FaShieldAlt,
   FaSignOutAlt,
   FaSun,
   FaTrashAlt,
+  FaUser,
   FaUserCircle,
   FaUsers,
 } from 'react-icons/fa'
@@ -17,6 +32,7 @@ import AccountAvatar from '../../components/AccountAvatar/AccountAvatar'
 import LanguageSwitcher from '../../components/LanguageSwitcher/LanguageSwitcher'
 import { useAuth } from '../../context/AuthContext'
 import { useLanguage } from '../../context/LanguageContext'
+import { usePreferences } from '../../context/PreferencesContext'
 import { useTheme } from '../../context/ThemeContext'
 import './Settings.css'
 
@@ -29,14 +45,48 @@ const buildProfileForm = (user) => ({
   email: user?.email || '',
   bio: user?.bio || '',
   avatar: user?.avatar || '',
+  phone: user?.phone || '',
+  country: user?.country || '',
+  city: user?.city || '',
+  address: user?.address || '',
+  postalCode: user?.postalCode || '',
 })
+
+const formatRelativeTime = (t, date) => {
+  if (!date) return t('settings.lastUpdatedNever')
+
+  const diffMs = Date.now() - new Date(date).getTime()
+  const minutes = Math.floor(diffMs / 60000)
+
+  if (minutes < 1) return t('time.justNow')
+  if (minutes < 60) return t('time.minutesAgo', { n: minutes })
+
+  const hours = Math.floor(minutes / 60)
+  return t('time.hoursAgo', { n: hours })
+}
 
 function Settings() {
   const navigate = useNavigate()
-  const { user, accounts, isAuthenticated, logout, switchAccount, removeAccount, updateProfile, changePassword } =
-    useAuth()
+  const {
+    user,
+    accounts,
+    isAuthenticated,
+    logout,
+    switchAccount,
+    removeAccount,
+    updateProfile,
+    changePassword,
+    deleteAccount,
+  } = useAuth()
   const { theme, setTheme } = useTheme()
   const { t } = useLanguage()
+  const { preferences, setPreference } = usePreferences()
+  const [justSaved, setJustSaved] = useState(false)
+
+  const handleConfirmSave = () => {
+    setJustSaved(true)
+    window.setTimeout(() => setJustSaved(false), 2000)
+  }
 
   const SECTIONS = [
     { id: 'profile', label: t('settings.sectionProfile'), icon: <FaUserCircle /> },
@@ -52,6 +102,8 @@ function Settings() {
   const [passwordForm, setPasswordForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' })
   const [passwordStatus, setPasswordStatus] = useState(null)
   const [isSavingPassword, setIsSavingPassword] = useState(false)
+  const [lastSavedAt, setLastSavedAt] = useState(null)
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false)
   const fileInputRef = useRef(null)
 
   useEffect(() => {
@@ -129,7 +181,13 @@ function Settings() {
         email: profileForm.email,
         bio: profileForm.bio,
         avatar: profileForm.avatar,
+        phone: profileForm.phone,
+        country: profileForm.country,
+        city: profileForm.city,
+        address: profileForm.address,
+        postalCode: profileForm.postalCode,
       })
+      setLastSavedAt(new Date())
       setProfileStatus({ type: 'success', text: t('settings.profileSuccess') })
     } catch (requestError) {
       setProfileStatus({
@@ -186,6 +244,31 @@ function Settings() {
     navigate('/auth/login')
   }
 
+  const handleToggleAccountPreference = async (key, value) => {
+    try {
+      await updateProfile({ [key]: value })
+    } catch {
+      /* preference toggles are best-effort; ignore transient failures */
+    }
+  }
+
+  const handleDeleteAccount = async () => {
+    if (!window.confirm(t('settings.deleteAccountConfirm'))) return
+
+    setIsDeletingAccount(true)
+
+    try {
+      await deleteAccount()
+      navigate('/auth/login')
+    } catch (requestError) {
+      setProfileStatus({
+        type: 'error',
+        text: requestError.response?.data?.message || t('settings.deleteAccountError'),
+      })
+      setIsDeletingAccount(false)
+    }
+  }
+
   return (
     <section className="settings-page">
       <header className="settings-header">
@@ -218,104 +301,256 @@ function Settings() {
 
         <div className="settings-content">
           {activeSection === 'profile' && (
-            <form className="settings-card" onSubmit={handleProfileSubmit}>
-              <div className="settings-card-heading">
-                <h2>{t('settings.profileHeading')}</h2>
-                <p>{t('settings.profileSubheading')}</p>
-              </div>
-
-              <div className="settings-avatar-row">
-                <AccountAvatar src={profileForm.avatar} name={profileForm.name || profileForm.username} size={72} />
-                <div className="settings-avatar-actions">
-                  <button
-                    type="button"
-                    className="settings-btn settings-btn-ghost"
-                    onClick={() => fileInputRef.current?.click()}
-                  >
-                    <FaCamera /> {t('settings.uploadAvatar')}
-                  </button>
-                  {profileForm.avatar ? (
+            <div className="settings-profile-layout">
+              <div className="settings-profile-side">
+                <div className="settings-card settings-profile-summary">
+                  <div className="settings-profile-avatar-wrap">
+                    <AccountAvatar src={profileForm.avatar} name={profileForm.name || profileForm.username} size={88} />
                     <button
                       type="button"
-                      className="settings-btn settings-btn-danger-ghost"
-                      onClick={() => setProfileForm((current) => ({ ...current, avatar: '' }))}
+                      className="settings-avatar-edit"
+                      aria-label={t('settings.uploadAvatar')}
+                      onClick={() => fileInputRef.current?.click()}
                     >
-                      <FaTrashAlt /> {t('settings.removeAvatar')}
+                      <FaCamera />
                     </button>
-                  ) : null}
-                  <small>{t('settings.avatarHint')}</small>
+                    <input ref={fileInputRef} accept="image/*" hidden type="file" onChange={handleAvatarSelect} />
+                  </div>
+
+                  <strong className="settings-profile-name">{profileForm.name || profileForm.username}</strong>
+                  <span className="settings-profile-email">{profileForm.email}</span>
+                  <span className="settings-profile-role-badge">{t(`role.${user.role}`)}</span>
+
+                  <dl className="settings-profile-meta">
+                    <div>
+                      <dt><FaCalendarAlt /> {t('settings.joinedDate')}</dt>
+                      <dd>
+                        {user.registeredAt
+                          ? new Date(user.registeredAt).toLocaleDateString()
+                          : '—'}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt><FaClock /> {t('settings.lastLoginDate')}</dt>
+                      <dd>{user.lastLogin ? new Date(user.lastLogin).toLocaleString() : '—'}</dd>
+                    </div>
+                    <div>
+                      <dt><FaShieldAlt /> {t('settings.statusLabel')}</dt>
+                      <dd>
+                        <span className={`settings-status-pill ${user.status === 'Blocked' ? 'is-blocked' : 'is-active'}`}>
+                          {t(`status.${user.status}`)}
+                        </span>
+                      </dd>
+                    </div>
+                  </dl>
                 </div>
-                <input
-                  ref={fileInputRef}
-                  accept="image/*"
-                  hidden
-                  type="file"
-                  onChange={handleAvatarSelect}
-                />
+
+                <div className="settings-card settings-quick-actions">
+                  <div className="settings-card-heading">
+                    <h2>{t('settings.quickActions')}</h2>
+                  </div>
+
+                  <button type="button" className="settings-quick-action" onClick={() => setActiveSection('security')}>
+                    <span className="settings-toggle-icon"><FaLock /></span>
+                    <span className="settings-toggle-text"><strong>{t('settings.changePassword')}</strong></span>
+                    <FaChevronRight />
+                  </button>
+
+                  <button type="button" className="settings-quick-action" disabled>
+                    <span className="settings-toggle-icon"><FaShieldAlt /></span>
+                    <span className="settings-toggle-text"><strong>{t('settings.manage2FA')}</strong></span>
+                    <span className="settings-soon-badge">{t('settings.comingSoon')}</span>
+                  </button>
+
+                  <button type="button" className="settings-quick-action" disabled>
+                    <span className="settings-toggle-icon"><FaDesktop /></span>
+                    <span className="settings-toggle-text"><strong>{t('settings.manageSessions')}</strong></span>
+                    <span className="settings-soon-badge">{t('settings.comingSoon')}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    className="settings-quick-action is-danger"
+                    disabled={isDeletingAccount}
+                    onClick={handleDeleteAccount}
+                  >
+                    <span className="settings-toggle-icon"><FaTrashAlt /></span>
+                    <span className="settings-toggle-text"><strong>{t('settings.deleteAccount')}</strong></span>
+                    <FaChevronRight />
+                  </button>
+                </div>
               </div>
 
-              <div className="settings-grid">
-                <label className="settings-field">
-                  <span>{t('settings.name')}</span>
-                  <input
-                    name="name"
-                    placeholder={t('settings.namePlaceholder')}
-                    type="text"
-                    value={profileForm.name}
-                    onChange={handleProfileChange}
-                  />
-                </label>
+              <form className="settings-profile-main" onSubmit={handleProfileSubmit}>
+                <div className="settings-card">
+                  <div className="settings-card-heading settings-card-heading-icon">
+                    <span className="settings-toggle-icon"><FaUser /></span>
+                    <h2>{t('settings.basicInfoHeading')}</h2>
+                  </div>
 
-                <label className="settings-field">
-                  <span>{t('settings.usernameLabel')}</span>
-                  <input
-                    minLength="3"
-                    name="username"
-                    placeholder="username"
-                    required
-                    type="text"
-                    value={profileForm.username}
-                    onChange={handleProfileChange}
-                  />
-                </label>
+                  <div className="settings-grid">
+                    <label className="settings-field">
+                      <span>{t('settings.fullName')}</span>
+                      <input
+                        name="name"
+                        placeholder={t('settings.namePlaceholder')}
+                        type="text"
+                        value={profileForm.name}
+                        onChange={handleProfileChange}
+                      />
+                    </label>
 
-                <label className="settings-field settings-field-wide">
-                  <span>{t('settings.email')}</span>
-                  <input
-                    name="email"
-                    placeholder="email@example.com"
-                    type="email"
-                    value={profileForm.email}
-                    onChange={handleProfileChange}
-                  />
-                </label>
+                    <label className="settings-field">
+                      <span>{t('settings.usernameField')}</span>
+                      <input
+                        minLength="3"
+                        name="username"
+                        placeholder="username"
+                        required
+                        type="text"
+                        value={profileForm.username}
+                        onChange={handleProfileChange}
+                      />
+                    </label>
 
-                <label className="settings-field settings-field-wide">
-                  <span>{t('settings.bio')}</span>
-                  <textarea
-                    maxLength={BIO_MAX_LENGTH}
-                    name="bio"
-                    placeholder={t('settings.bioPlaceholder')}
-                    rows="4"
-                    value={profileForm.bio}
-                    onChange={handleProfileChange}
-                  />
-                  <small>
-                    {profileForm.bio.length}/{BIO_MAX_LENGTH}
-                  </small>
-                </label>
+                    <label className="settings-field">
+                      <span>{t('settings.emailField')}</span>
+                      <input
+                        name="email"
+                        placeholder="email@example.com"
+                        type="email"
+                        value={profileForm.email}
+                        onChange={handleProfileChange}
+                      />
+                    </label>
+
+                    <label className="settings-field">
+                      <span>{t('settings.phone')}</span>
+                      <input
+                        name="phone"
+                        placeholder={t('settings.phonePlaceholder')}
+                        type="tel"
+                        value={profileForm.phone}
+                        onChange={handleProfileChange}
+                      />
+                    </label>
+
+                    <label className="settings-field settings-field-wide">
+                      <span>{t('settings.bio')}</span>
+                      <textarea
+                        maxLength={BIO_MAX_LENGTH}
+                        name="bio"
+                        placeholder={t('settings.bioPlaceholder')}
+                        rows="3"
+                        value={profileForm.bio}
+                        onChange={handleProfileChange}
+                      />
+                      <small>
+                        {profileForm.bio.length}/{BIO_MAX_LENGTH}
+                      </small>
+                    </label>
+                  </div>
+
+                  {profileStatus ? (
+                    <p className={`settings-status settings-status-${profileStatus.type}`}>{profileStatus.text}</p>
+                  ) : null}
+
+                  <div className="settings-card-footer settings-card-footer-split">
+                    <button className="settings-btn settings-btn-primary" disabled={isSavingProfile} type="submit">
+                      {isSavingProfile ? t('settings.saving') : t('settings.save')}
+                    </button>
+                    <span className="settings-last-updated">
+                      <FaCheckCircle /> {t('settings.lastUpdated', { time: formatRelativeTime(t, lastSavedAt) })}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="settings-card">
+                  <div className="settings-card-heading settings-card-heading-icon">
+                    <span className="settings-toggle-icon"><FaMapMarkerAlt /></span>
+                    <h2>{t('settings.addressHeading')}</h2>
+                  </div>
+
+                  <div className="settings-grid">
+                    <label className="settings-field">
+                      <span>{t('settings.country')}</span>
+                      <input name="country" type="text" value={profileForm.country} onChange={handleProfileChange} />
+                    </label>
+
+                    <label className="settings-field">
+                      <span>{t('settings.city')}</span>
+                      <input name="city" type="text" value={profileForm.city} onChange={handleProfileChange} />
+                    </label>
+
+                    <label className="settings-field">
+                      <span>{t('settings.addressField')}</span>
+                      <input name="address" type="text" value={profileForm.address} onChange={handleProfileChange} />
+                    </label>
+
+                    <label className="settings-field">
+                      <span>{t('settings.postalCode')}</span>
+                      <input
+                        name="postalCode"
+                        type="text"
+                        value={profileForm.postalCode}
+                        onChange={handleProfileChange}
+                      />
+                    </label>
+                  </div>
+                </div>
+              </form>
+
+              <div className="settings-card settings-profile-toggles">
+                <div className="settings-card-heading settings-card-heading-icon">
+                  <span className="settings-toggle-icon"><FaCog /></span>
+                  <h2>{t('settings.profileSettingsHeading')}</h2>
+                </div>
+
+                <div className="settings-toggle-grid">
+                  <label className="settings-toggle-item">
+                    <span className="settings-toggle-icon"><FaLock /></span>
+                    <span className="settings-toggle-text">
+                      <strong>{t('settings.emailNotifToggle')}</strong>
+                      <small>{t('settings.emailNotifToggleText')}</small>
+                    </span>
+                    <span
+                      className={`settings-switch ${user.emailNotifications !== false ? 'is-on' : ''}`}
+                      role="switch"
+                      aria-checked={user.emailNotifications !== false}
+                      tabIndex={0}
+                      onClick={() => handleToggleAccountPreference('emailNotifications', user.emailNotifications === false)}
+                      onKeyDown={(event) =>
+                        event.key === 'Enter' &&
+                        handleToggleAccountPreference('emailNotifications', user.emailNotifications === false)
+                      }
+                    >
+                      <span className="settings-switch-knob" />
+                    </span>
+                  </label>
+
+                  <label className="settings-toggle-item">
+                    <span className="settings-toggle-icon"><FaDesktop /></span>
+                    <span className="settings-toggle-text">
+                      <strong>{t('settings.profileVisibleToggle')}</strong>
+                      <small>{t('settings.profileVisibleToggleText')}</small>
+                    </span>
+                    <span
+                      className={`settings-switch ${user.profileVisible !== false ? 'is-on' : ''}`}
+                      role="switch"
+                      aria-checked={user.profileVisible !== false}
+                      tabIndex={0}
+                      onClick={() => handleToggleAccountPreference('profileVisible', user.profileVisible === false)}
+                      onKeyDown={(event) =>
+                        event.key === 'Enter' &&
+                        handleToggleAccountPreference('profileVisible', user.profileVisible === false)
+                      }
+                    >
+                      <span className="settings-switch-knob" />
+                    </span>
+                  </label>
+                </div>
               </div>
-
-              {profileStatus ? (
-                <p className={`settings-status settings-status-${profileStatus.type}`}>{profileStatus.text}</p>
-              ) : null}
-
-              <div className="settings-card-footer">
-                <button className="settings-btn settings-btn-primary" disabled={isSavingProfile} type="submit">
-                  {isSavingProfile ? t('settings.saving') : t('settings.save')}
-                </button>
-              </div>
-            </form>
+            </div>
           )}
 
           {activeSection === 'security' && (
@@ -444,6 +679,11 @@ function Settings() {
                 <p>{t('settings.appearanceSubheading')}</p>
               </div>
 
+              <div className="settings-group-heading">
+                <strong>{t('settings.themeGroupTitle')}</strong>
+                <p>{t('settings.themeGroupSubtitle')}</p>
+              </div>
+
               <div className="settings-theme-grid">
                 <button
                   type="button"
@@ -501,6 +741,145 @@ function Settings() {
                     </span>
                   </span>
                   <small>{t('settings.darkModeText')}</small>
+                </button>
+              </div>
+
+              <div className="settings-group-heading">
+                <strong>{t('settings.additionalHeading')}</strong>
+              </div>
+
+              <div className="settings-toggle-grid">
+                <label className="settings-toggle-item">
+                  <span className="settings-toggle-icon"><FaCompressAlt /></span>
+                  <span className="settings-toggle-text">
+                    <strong>{t('settings.compactSidebar')}</strong>
+                    <small>{t('settings.compactSidebarText')}</small>
+                  </span>
+                  <span
+                    className={`settings-switch ${preferences.compactSidebar ? 'is-on' : ''}`}
+                    role="switch"
+                    aria-checked={preferences.compactSidebar}
+                    tabIndex={0}
+                    onClick={() => setPreference('compactSidebar', !preferences.compactSidebar)}
+                    onKeyDown={(event) =>
+                      event.key === 'Enter' && setPreference('compactSidebar', !preferences.compactSidebar)
+                    }
+                  >
+                    <span className="settings-switch-knob" />
+                  </span>
+                </label>
+
+                <label className="settings-toggle-item">
+                  <span className="settings-toggle-icon"><FaFont /></span>
+                  <span className="settings-toggle-text">
+                    <strong>{t('settings.largeText')}</strong>
+                    <small>{t('settings.largeTextText')}</small>
+                  </span>
+                  <span
+                    className={`settings-switch ${preferences.largeText ? 'is-on' : ''}`}
+                    role="switch"
+                    aria-checked={preferences.largeText}
+                    tabIndex={0}
+                    onClick={() => setPreference('largeText', !preferences.largeText)}
+                    onKeyDown={(event) =>
+                      event.key === 'Enter' && setPreference('largeText', !preferences.largeText)
+                    }
+                  >
+                    <span className="settings-switch-knob" />
+                  </span>
+                </label>
+
+                <label className="settings-toggle-item">
+                  <span className="settings-toggle-icon"><FaMagic /></span>
+                  <span className="settings-toggle-text">
+                    <strong>{t('settings.animations')}</strong>
+                    <small>{t('settings.animationsText')}</small>
+                  </span>
+                  <span
+                    className={`settings-switch ${preferences.animationsEnabled ? 'is-on' : ''}`}
+                    role="switch"
+                    aria-checked={preferences.animationsEnabled}
+                    tabIndex={0}
+                    onClick={() => setPreference('animationsEnabled', !preferences.animationsEnabled)}
+                    onKeyDown={(event) =>
+                      event.key === 'Enter' && setPreference('animationsEnabled', !preferences.animationsEnabled)
+                    }
+                  >
+                    <span className="settings-switch-knob" />
+                  </span>
+                </label>
+
+                <label className="settings-toggle-item">
+                  <span className="settings-toggle-icon"><FaAdjust /></span>
+                  <span className="settings-toggle-text">
+                    <strong>{t('settings.highContrast')}</strong>
+                    <small>{t('settings.highContrastText')}</small>
+                  </span>
+                  <span
+                    className={`settings-switch ${preferences.highContrast ? 'is-on' : ''}`}
+                    role="switch"
+                    aria-checked={preferences.highContrast}
+                    tabIndex={0}
+                    onClick={() => setPreference('highContrast', !preferences.highContrast)}
+                    onKeyDown={(event) =>
+                      event.key === 'Enter' && setPreference('highContrast', !preferences.highContrast)
+                    }
+                  >
+                    <span className="settings-switch-knob" />
+                  </span>
+                </label>
+
+                <label className="settings-toggle-item">
+                  <span className="settings-toggle-icon"><FaMoon /></span>
+                  <span className="settings-toggle-text">
+                    <strong>{t('settings.autoNightMode')}</strong>
+                    <small>{t('settings.autoNightModeText')}</small>
+                  </span>
+                  <span
+                    className={`settings-switch ${preferences.autoNightMode ? 'is-on' : ''}`}
+                    role="switch"
+                    aria-checked={preferences.autoNightMode}
+                    tabIndex={0}
+                    onClick={() => setPreference('autoNightMode', !preferences.autoNightMode)}
+                    onKeyDown={(event) =>
+                      event.key === 'Enter' && setPreference('autoNightMode', !preferences.autoNightMode)
+                    }
+                  >
+                    <span className="settings-switch-knob" />
+                  </span>
+                </label>
+
+                <label className="settings-toggle-item">
+                  <span className="settings-toggle-icon"><FaGlobe /></span>
+                  <span className="settings-toggle-text">
+                    <strong>{t('settings.autoLanguage')}</strong>
+                    <small>{t('settings.autoLanguageText')}</small>
+                  </span>
+                  <span
+                    className={`settings-switch ${preferences.autoLanguage ? 'is-on' : ''}`}
+                    role="switch"
+                    aria-checked={preferences.autoLanguage}
+                    tabIndex={0}
+                    onClick={() => setPreference('autoLanguage', !preferences.autoLanguage)}
+                    onKeyDown={(event) =>
+                      event.key === 'Enter' && setPreference('autoLanguage', !preferences.autoLanguage)
+                    }
+                  >
+                    <span className="settings-switch-knob" />
+                  </span>
+                </label>
+              </div>
+
+              <div className="settings-autosave-bar">
+                <span className="settings-autosave-status">
+                  <FaCheckCircle />
+                  <span>
+                    <strong>{t('settings.autosavedTitle')}</strong>
+                    <small>{justSaved ? t('settings.autosavedText') : t('settings.appearanceSubheading')}</small>
+                  </span>
+                </span>
+                <button type="button" className="settings-btn settings-btn-primary" onClick={handleConfirmSave}>
+                  <FaRegSave /> {t('settings.saveConfirm')}
                 </button>
               </div>
             </div>

@@ -336,3 +336,9 @@
   background: var(--bg-muted);
   border-color: var(--border-color);
 }
+
+:root[data-compact-sidebar='true'] .stats-container,
+:root[data-compact-sidebar='true'] .analytics-card,
+:root[data-compact-sidebar='true'] .recent-sales-card {
+  margin-left: 82px;
+}

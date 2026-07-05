@@ -684,6 +684,12 @@
   color: var(--text-primary);
 }
 
+:root[data-compact-sidebar='true'] .users-page {
+  margin-left: 82px;
+  width: calc(100vw - 82px - 48px);
+  max-width: calc(100vw - 82px - 48px);
+}
+
 [data-theme='dark'] .users-breadcrumb,
 [data-theme='dark'] .users-breadcrumb span + span::before,
 [data-theme='dark'] .users-stat p,

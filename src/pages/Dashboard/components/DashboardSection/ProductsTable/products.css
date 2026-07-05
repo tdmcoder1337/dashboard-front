@@ -129,3 +129,7 @@
 [data-theme='dark'] .products-table tbody tr:hover {
   color: var(--text-primary);
 }
+
+:root[data-compact-sidebar='true'] .products-wrapper {
+  margin-left: 82px;
+}

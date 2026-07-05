@@ -27,3 +27,7 @@
   background: var(--bg-primary, #1a1a1a);
 }
 
+:root[data-compact-sidebar='true'] .dashboard {
+  margin-left: 82px;
+}
+

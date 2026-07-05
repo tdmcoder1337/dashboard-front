@@ -894,6 +894,10 @@
   color: var(--text-primary);
 }
 
+:root[data-compact-sidebar='true'] .product-details {
+  margin-left: 82px;
+}
+
 [data-theme='dark'] .product-details__image-container,
 [data-theme='dark'] .product-details__thumbnail,
 [data-theme='dark'] .product-details__info-grid,

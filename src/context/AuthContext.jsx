@@ -111,6 +111,13 @@ export function AuthProvider({ children }) {
     await usersApi.update(user.id, { currentPassword, newPassword })
   }
 
+  const deleteAccount = async () => {
+    if (!user?.id) throw new Error('Not authenticated')
+
+    await usersApi.remove(user.id)
+    removeAccount(user.id)
+  }
+
   const value = useMemo(
     () => ({
       user,
@@ -123,6 +130,7 @@ export function AuthProvider({ children }) {
       removeAccount,
       updateProfile,
       changePassword,
+      deleteAccount,
     }),
     [user, accounts]
   )

@@ -111,3 +111,21 @@ textarea {
     padding: 16px;
   }
 }
+
+/* Preferences: text size, motion, contrast */
+:root[data-text-size='large'] {
+  font-size: 112.5%;
+}
+
+:root[data-motion='reduced'] *,
+:root[data-motion='reduced'] *::before,
+:root[data-motion='reduced'] *::after {
+  transition-duration: 0s !important;
+  animation-duration: 0s !important;
+}
+
+:root[data-contrast='high'] {
+  --text-secondary: var(--text-primary);
+  --text-muted: var(--text-secondary);
+  --border-color: var(--text-muted);
+}

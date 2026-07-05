@@ -170,3 +170,32 @@
     padding: 8px;
   }
 }
+
+/* Compact sidebar preference */
+:root[data-compact-sidebar='true'] .sidebar {
+  width: 82px;
+  padding: 16px 12px;
+}
+
+:root[data-compact-sidebar='true'] .sidebar-brand {
+  justify-content: center;
+}
+
+:root[data-compact-sidebar='true'] .sidebar-brand strong,
+:root[data-compact-sidebar='true'] .sidebar-item-text,
+:root[data-compact-sidebar='true'] .sidebar-account-info,
+:root[data-compact-sidebar='true'] .sidebar-account-chevron {
+  display: none;
+}
+
+:root[data-compact-sidebar='true'] .sidebar-item {
+  justify-content: center;
+  padding: 13px;
+}
+
+:root[data-compact-sidebar='true'] .sidebar-account {
+  display: flex;
+  justify-content: center;
+  min-height: 54px;
+  padding: 8px;
+}

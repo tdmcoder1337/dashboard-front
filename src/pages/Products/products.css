@@ -616,6 +616,10 @@
   color: var(--text-primary);
 }
 
+:root[data-compact-sidebar='true'] .products {
+  margin-left: 82px;
+}
+
 [data-theme='dark'] .products-topbar h1,
 [data-theme='dark'] .products-title h2,
 [data-theme='dark'] .products-search input,
