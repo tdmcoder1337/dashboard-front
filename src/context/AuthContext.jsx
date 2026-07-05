@@ -1,9 +1,15 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
-import { authApi, usersApi } from '../services/api'
+import { authApi, usersApi, TOKEN_KEY } from '../services/api'
 
 const AuthContext = createContext(null)
 const STORAGE_KEY = 'dashboard_user'
 const ACCOUNTS_KEY = 'dashboard_accounts'
+
+const getStoredToken = () => localStorage.getItem(TOKEN_KEY)
+const setStoredToken = (token) => {
+  if (token) localStorage.setItem(TOKEN_KEY, token)
+  else localStorage.removeItem(TOKEN_KEY)
+}
 
 const stripAt = (value = '') => String(value).replace(/^@/, '')
 
@@ -65,18 +71,21 @@ export function AuthProvider({ children }) {
   const login = async (credentials) => {
     const { data } = await authApi.login(credentials)
     saveUser(data.user)
+    if (data.token) setStoredToken(data.token)
     return data
   }
 
   const register = async (credentials) => {
     const { data } = await authApi.register(credentials)
     saveUser(data.user)
+    if (data.token) setStoredToken(data.token)
     return data
   }
 
   const logout = () => {
     setUser(null)
     localStorage.removeItem(STORAGE_KEY)
+    setStoredToken(null)
   }
 
   const switchAccount = (accountId) => {
@@ -115,6 +124,7 @@ export function AuthProvider({ children }) {
     if (!user?.id) throw new Error('Not authenticated')
 
     await usersApi.remove(user.id)
+    setStoredToken(null)
     removeAccount(user.id)
   }
 
