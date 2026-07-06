@@ -110,12 +110,28 @@
 }
 
 @media (max-width: 480px) {
+  .card {
+    border-radius: 14px;
+  }
+
   .card-header {
-    padding: 12px 14px;
+    padding: 10px 12px;
   }
 
   .card-section {
-    padding: 12px 14px;
+    padding: 10px 12px;
+  }
+
+  .card-title {
+    font-size: 14px;
+  }
+
+  .card-subtitle {
+    font-size: 12px;
+  }
+
+  .card-icon {
+    font-size: 20px;
   }
 
   .card-action {

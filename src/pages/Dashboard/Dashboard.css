@@ -32,21 +32,27 @@
   }
 
   .dashboard-container {
-    padding: 14px;
+    padding: 60px 14px 24px;
   }
 }
 
 @media (max-width: 480px) {
   .dashboard-container {
-    padding: 10px;
+    padding: 56px 10px 20px;
   }
 }
 
 [data-theme='dark'] .dashboard {
-  background: var(--bg-primary, #1a1a1a);
+  background: var(--bg-base);
 }
 
 :root[data-compact-sidebar='true'] .dashboard {
   margin-left: 82px;
+}
+
+@media (max-width: 768px) {
+  :root[data-compact-sidebar='true'] .dashboard {
+    margin-left: 0;
+  }
 }
 

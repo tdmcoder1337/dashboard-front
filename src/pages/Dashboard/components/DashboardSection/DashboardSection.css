@@ -293,7 +293,7 @@
 @media (max-width: 760px) {
   .stats-container {
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    gap: 10px;
   }
 
   .analytics-grid {
@@ -303,21 +303,35 @@
   .analytics-card,
   .recent-sales-card {
     min-height: auto;
-    padding: 16px;
+    padding: 14px;
   }
 
   .chart-area {
-    height: 240px;
-    padding: 12px;
+    height: 220px;
+    padding: 10px;
   }
 
   .stats-card-content {
-    min-height: 140px;
-    padding: 16px;
+    min-height: 120px;
+    padding: 14px;
+  }
+
+  .stats-card-top {
+    margin-bottom: 10px;
+  }
+
+  .stats-icon {
+    width: 30px;
+    height: 30px;
+    font-size: 11px;
   }
 
   .stats-value {
-    font-size: 22px;
+    font-size: 20px;
+  }
+
+  .stats-title {
+    font-size: 10px;
   }
 
   .analytics-header,
@@ -337,12 +351,30 @@
   }
 
   .stats-card-content {
-    min-height: 120px;
-    padding: 14px;
+    min-height: 100px;
+    padding: 12px;
+  }
+
+  .stats-card-top {
+    margin-bottom: 10px;
+  }
+
+  .stats-icon {
+    width: 28px;
+    height: 28px;
+    font-size: 10px;
+  }
+
+  .stats-title {
+    font-size: 10px;
   }
 
   .stats-value {
-    font-size: 20px;
+    font-size: 18px;
+  }
+
+  .stats-caption {
+    font-size: 11px;
   }
 
   .chart-area {
@@ -357,6 +389,26 @@
     position: static;
     transform: none;
     margin-top: 12px;
+    width: 72px;
+  }
+
+  .conversion-circle-inner {
+    width: 52px;
+  }
+
+  .conversion-circle-inner span {
+    font-size: 14px;
+  }
+
+  .analytics-card,
+  .recent-sales-card {
+    padding: 14px;
+    min-height: auto;
+  }
+
+  .analytics-card h3,
+  .recent-sales-card h3 {
+    font-size: 15px;
   }
 }
 

@@ -636,15 +636,20 @@
 @media (max-width: 768px) {
   .users-page {
     min-height: calc(100vh - 32px);
-    width: calc(100vw - 82px - 32px);
-    max-width: calc(100vw - 82px - 32px);
-    margin-left: 82px;
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+    padding: 60px 14px 24px;
   }
 
   .users-header,
   .users-footer {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .users-header h1 {
+    font-size: 20px;
   }
 
   .users-header-actions {
@@ -658,14 +663,30 @@
     grid-template-columns: 1fr;
   }
 
+  .users-stats {
+    gap: 12px;
+  }
+
   .users-stat {
-    min-height: 98px;
-    padding: 18px;
+    min-height: 80px;
+    padding: 14px;
+    gap: 14px;
+  }
+
+  .users-stat-icon {
+    width: 46px;
+    height: 46px;
+    font-size: 20px;
+    border-radius: 12px;
+  }
+
+  .users-stat strong {
+    font-size: 20px;
   }
 
   .users-toolbar {
-    gap: 12px;
-    padding: 14px;
+    gap: 10px;
+    padding: 12px;
   }
 
   .users-footer {
@@ -689,16 +710,39 @@
     width: 100%;
     max-width: 100%;
     margin-left: 0;
-    padding: 10px;
+    padding: 56px 10px 20px;
   }
 
   .users-header h1 {
-    font-size: 20px;
+    font-size: 18px;
+  }
+
+  .users-breadcrumb {
+    font-size: 12px;
   }
 
   .users-stat {
-    min-height: 80px;
-    padding: 14px;
+    min-height: 70px;
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .users-stat-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+  }
+
+  .users-stat p {
+    font-size: 11px;
+  }
+
+  .users-stat strong {
+    font-size: 18px;
+  }
+
+  .users-stat small {
+    font-size: 11px;
   }
 
   .users-table th,
@@ -710,6 +754,7 @@
   .users-toolbar {
     padding: 10px;
     gap: 8px;
+    grid-template-columns: 1fr;
   }
 
   .users-search input,
@@ -733,6 +778,14 @@
   margin-left: 82px;
   width: calc(100vw - 82px - 48px);
   max-width: calc(100vw - 82px - 48px);
+}
+
+@media (max-width: 768px) {
+  :root[data-compact-sidebar='true'] .users-page {
+    margin-left: 0;
+    width: 100%;
+    max-width: 100%;
+  }
 }
 
 [data-theme='dark'] .users-breadcrumb,

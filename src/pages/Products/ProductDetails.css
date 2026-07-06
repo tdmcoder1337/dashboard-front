@@ -856,21 +856,56 @@
   }
 }
 
+@media (max-width: 768px) {
+  .product-details {
+    padding: 60px 14px 24px;
+    margin-left: 0;
+  }
+
+  .product-details__card {
+    gap: 20px;
+  }
+
+  :root[data-compact-sidebar='true'] .product-details {
+    margin-left: 0;
+  }
+}
+
 @media (max-width: 640px) {
   .product-details {
-    padding: 18px;
+    padding: 56px 14px 24px;
+  }
+
+  .product-details__badge {
+    top: 16px;
+    left: 14px;
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  .product-details__wishlist {
+    top: 14px;
+    right: 14px;
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
+  }
+
+  .product-details__nav-btn {
+    width: 34px;
+    height: 34px;
   }
 
   .product-details__image-container {
-    min-height: 300px;
+    min-height: 260px;
   }
 
   .product-details__image {
-    height: 260px;
+    height: 220px;
   }
 
   .product-details__title {
-    font-size: 30px;
+    font-size: 26px;
   }
 
   .product-details__info-grid,
@@ -884,53 +919,78 @@
   }
 
   .product-details__thumbnail {
-    height: 76px;
+    height: 70px;
   }
 }
 
 @media (max-width: 480px) {
   .product-details {
-    padding: 12px;
+    padding: 52px 10px 20px;
     margin-left: 0;
   }
 
   .product-details__image-container {
-    min-height: 240px;
+    min-height: 200px;
   }
 
   .product-details__image {
-    height: 200px;
+    height: 180px;
   }
 
   .product-details__title {
-    font-size: 24px;
+    font-size: 20px;
   }
 
   .product-details__subtitle {
-    font-size: 14px;
+    font-size: 13px;
   }
 
   .product-details__price {
-    font-size: 28px;
+    font-size: 22px;
   }
 
   .product-details__info-grid {
-    gap: 10px;
+    gap: 8px;
+    padding: 14px;
   }
 
   .info-card {
-    padding: 12px;
-  }
-
-  .product-details__thumbnails {
+    padding: 8px;
     gap: 8px;
   }
 
+  .info-icon {
+    font-size: 18px;
+  }
+
+  .info-label {
+    font-size: 12px;
+  }
+
+  .info-value {
+    font-size: 13px;
+  }
+
+  .product-details__thumbnails {
+    gap: 6px;
+  }
+
   .product-details__thumbnail {
-    height: 60px;
+    height: 50px;
   }
 
   .product-details__back {
+    font-size: 13px;
+  }
+
+  .product-details__actions {
+    gap: 10px;
+  }
+
+  .product-details__buy,
+  .product-details__favorite,
+  .product-details__delivery {
+    min-height: 46px;
     font-size: 14px;
   }
 }

@@ -1,5 +1,7 @@
+import { useState } from 'react'
 import './styles/global.css'
 import { Routes, Route } from 'react-router-dom'
+import { FiMenu, FiX } from 'react-icons/fi'
 import Siderbar from './components/Sidebar/Siderbar'
 import Dashboard from './pages/Dashboard/Dashboard'
 import Users from './pages/Users/Users'
@@ -12,9 +14,19 @@ import Cart from './pages/Cart/Cart'
 import Wishlist from './pages/Wishlist/Wishlist'
 
 function App() {
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+
   return (
-    <div className="app-shell">
-      <Siderbar />
+    <div className={`app-shell ${sidebarOpen ? 'sidebar-open' : ''}`}>
+      <button
+        className="mobile-menu-btn"
+        onClick={() => setSidebarOpen(prev => !prev)}
+        aria-label="Toggle sidebar"
+      >
+        {sidebarOpen ? <FiX /> : <FiMenu />}
+      </button>
+      <Siderbar onClose={() => setSidebarOpen(false)} />
+      <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)} />
       <main className="app-main">
         <Routes>
           <Route path="/" element={<Dashboard />} />

@@ -1,5 +1,5 @@
 .products {
-  min-height: 1200vh;
+  min-height: 100vh;
   margin-left: 280px;
   padding: 24px 20px 32px;
   color: #111827;
@@ -10,15 +10,15 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
+  gap: 16px;
   width: min(100%, 1400px);
-  height: 80px;
+  min-height: 80px;
   margin: -42px auto 22px;
   border-radius: 8px;
   box-shadow: 0 0 5px rgb(70, 68, 68);
-  padding: 10px;
+  padding: 10px 16px;
   box-sizing: border-box;
-  position: relative;
+  flex-wrap: wrap;
 }
 
 .products-topbar h1 {
@@ -46,10 +46,6 @@
   border-radius: 14px;
   background: transparent;
   color: #475569;
-  position: absolute;
-  right: 200px;
-  margin-right: 40px;
-
 }
 
 .products-search input {
@@ -382,37 +378,26 @@
   }
 }
 
-@media (max-width: 760px) {
+@media (max-width: 768px) {
   .products {
     margin-left: 0;
-    padding: 18px 16px 32px;
+    padding: 60px 12px 24px;
   }
 
   .products .products-panel {
-    padding: 20px;
+    padding: 14px;
   }
 
   .products .products-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 560px) {
-  .products .products-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 480px) {
-  .products {
-    padding: 12px 10px 24px;
-  }
-
-  .products .products-panel {
-    padding: 12px;
+    gap: 12px;
   }
 
   .products-topbar {
+    flex-direction: column;
+    align-items: stretch;
+    min-height: auto;
+    padding: 12px;
     gap: 10px;
   }
 
@@ -420,13 +405,24 @@
     font-size: 20px;
   }
 
-  .products-search input {
-    font-size: 13px;
-    padding: 10px 12px;
+  .products-search {
+    width: 100%;
+    min-height: 42px;
+  }
+
+  .products .products-header {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .products-tools {
-    gap: 6px;
+    width: 100%;
+    justify-content: flex-start;
+    gap: 8px;
+  }
+
+  .products-topbar-actions {
+    justify-content: flex-end;
   }
 
   .category-buttons {
@@ -436,6 +432,80 @@
   .category-buttons button {
     padding: 6px 12px;
     font-size: 11px;
+    height: 34px;
+  }
+}
+
+@media (max-width: 560px) {
+  .products .products-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .product-card__body {
+    padding: 10px 10px 6px;
+  }
+
+  .product-card__title {
+    font-size: 13px;
+  }
+
+  .product-card__prices strong {
+    font-size: 15px;
+  }
+
+  .product-card__footer {
+    padding: 6px 10px 10px;
+  }
+
+  .product-card__add-btn {
+    height: 36px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .products {
+    padding: 56px 8px 20px;
+  }
+
+  .products .products-panel {
+    padding: 10px;
+  }
+
+  .products .products-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .products-topbar {
+    padding: 10px;
+  }
+
+  .products-topbar h1 {
+    font-size: 18px;
+  }
+
+  .products-search input {
+    font-size: 13px;
+  }
+
+  .products-tools {
+    gap: 6px;
+  }
+
+  .category-buttons {
+    gap: 6px;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 4px;
+    margin: 6px 0;
+  }
+
+  .category-buttons button {
+    padding: 6px 12px;
+    font-size: 11px;
+    white-space: nowrap;
   }
 }
 
@@ -508,50 +578,7 @@
   }
 }
 
-@media (max-width: 768px) {
-  .products {
-    margin-left: 82px;
-    padding: 4px 0 22px 0;
-  }
 
-  .products-topbar {
-    flex-direction: column;
-  }
-
-  .products-search {
-    width: 100%;
-
-  }
-
-  .products .products-panel {
-    padding: 14px;
-    border-radius: 10px;
-  }
-
-  .products .products-header {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .products-tools {
-    width: 100%;
-    justify-content: flex-start;
-  }
-
-  .products .products-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .products-topbar h1 {
-    font-size: 24px;
-  }
-}
-
-@media (max-width: 520px) {
-  .products .products-grid {
-    grid-template-columns: 1fr;
-  }
-}
 
 .products-topbar-actions {
   display: flex;
@@ -654,6 +681,12 @@
 
 :root[data-compact-sidebar='true'] .products {
   margin-left: 82px;
+}
+
+@media (max-width: 768px) {
+  :root[data-compact-sidebar='true'] .products {
+    margin-left: 0;
+  }
 }
 
 [data-theme='dark'] .products-topbar h1,

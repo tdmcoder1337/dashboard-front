@@ -1,12 +1,12 @@
 import { useNavigate, useLocation } from 'react-router-dom';
-import { FaBriefcase, FaChevronDown } from 'react-icons/fa';
+import { FaBriefcase, FaChevronDown, FaTimes } from 'react-icons/fa';
 import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 import AccountAvatar from '../AccountAvatar/AccountAvatar';
 import { sidebarData } from './SidebarData';
 import './Sidebar.css';
 
-function Siderbar() {
+function Siderbar({ onClose }) {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
@@ -15,6 +15,7 @@ function Siderbar() {
 
   const handleItemClick = (path) => {
     navigate(path);
+    if (onClose) onClose();
   };
 
   return (
@@ -24,6 +25,9 @@ function Siderbar() {
           <FaBriefcase />
         </span>
         <strong>Market Admin</strong>
+        <button className="sidebar-close-btn" onClick={onClose} aria-label="Close sidebar">
+          <FaTimes />
+        </button>
       </div>
 
       <nav className="sidebar-nav" aria-label="Main navigation">

@@ -205,17 +205,31 @@
   color: #2dd4bf;
 }
 
+@media (max-width: 768px) {
+  .auth-page {
+    padding: 60px 16px 24px;
+  }
+}
+
 @media (max-width: 480px) {
   .auth-page {
-    padding: 12px;
+    padding: 56px 10px 20px;
   }
 
   .auth-panel {
-    padding: 20px;
+    padding: 16px;
     border-radius: 12px;
   }
 
   .auth-heading h1 {
-    font-size: 21px;
+    font-size: 20px;
+  }
+
+  .auth-heading p {
+    font-size: 13px;
+  }
+
+  .auth-field div {
+    min-height: 40px;
   }
 }

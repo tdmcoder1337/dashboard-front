@@ -207,6 +207,43 @@
   }
 }
 
+/* Mobile sidebar: hidden by default, slides in when open */
+.sidebar-close-btn {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .sidebar-close-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    margin-left: auto;
+    border: none;
+    border-radius: 8px;
+    background: var(--bg-muted);
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s;
+  }
+
+  .sidebar-close-btn:hover {
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+
+  .sidebar-open .sidebar {
+    transform: translateX(0);
+  }
+}
+
 /* Compact sidebar preference */
 :root[data-compact-sidebar='true'] .sidebar {
   width: 82px;

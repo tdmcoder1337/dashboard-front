@@ -684,15 +684,20 @@
 @media (max-width: 768px) {
   .messages-page {
     min-height: calc(100vh - 32px);
-    width: calc(100vw - 82px - 32px);
-    max-width: calc(100vw - 82px - 32px);
-    margin-left: 82px;
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+    padding: 60px 14px 24px;
   }
 
   .messages-header,
   .messages-footer {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .messages-header h1 {
+    font-size: 20px;
   }
 
   .messages-header-actions {
@@ -706,6 +711,10 @@
     grid-template-columns: 1fr;
   }
 
+  .messages-stats {
+    gap: 12px;
+  }
+
   .messages-tabs {
     width: 100%;
   }
@@ -716,13 +725,25 @@
   }
 
   .messages-stat {
-    min-height: 98px;
-    padding: 18px;
+    min-height: 80px;
+    padding: 14px;
+    gap: 14px;
+  }
+
+  .messages-stat-icon {
+    width: 46px;
+    height: 46px;
+    font-size: 20px;
+    border-radius: 12px;
+  }
+
+  .messages-stat strong {
+    font-size: 20px;
   }
 
   .messages-toolbar {
-    gap: 12px;
-    padding: 14px;
+    gap: 10px;
+    padding: 12px;
   }
 
   .messages-footer {
@@ -741,16 +762,39 @@
     width: 100%;
     max-width: 100%;
     margin-left: 0;
-    padding: 10px;
+    padding: 56px 10px 20px;
   }
 
   .messages-header h1 {
-    font-size: 20px;
+    font-size: 18px;
+  }
+
+  .messages-breadcrumb {
+    font-size: 12px;
   }
 
   .messages-stat {
-    min-height: 80px;
-    padding: 14px;
+    min-height: 70px;
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .messages-stat-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+  }
+
+  .messages-stat p {
+    font-size: 11px;
+  }
+
+  .messages-stat strong {
+    font-size: 18px;
+  }
+
+  .messages-stat small {
+    font-size: 11px;
   }
 
   .messages-table th,
@@ -762,6 +806,7 @@
   .messages-toolbar {
     padding: 10px;
     gap: 8px;
+    grid-template-columns: 1fr;
   }
 
   .messages-compose {
@@ -783,6 +828,14 @@
   margin-left: 82px;
   width: calc(100vw - 82px - 48px);
   max-width: calc(100vw - 82px - 48px);
+}
+
+@media (max-width: 768px) {
+  :root[data-compact-sidebar='true'] .messages-page {
+    margin-left: 0;
+    width: 100%;
+    max-width: 100%;
+  }
 }
 
 [data-theme='dark'] .messages-breadcrumb,
