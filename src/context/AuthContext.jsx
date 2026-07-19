@@ -5,7 +5,6 @@ const AuthContext = createContext(null)
 const STORAGE_KEY = 'dashboard_user'
 const ACCOUNTS_KEY = 'dashboard_accounts'
 
-const getStoredToken = () => localStorage.getItem(TOKEN_KEY)
 const setStoredToken = (token) => {
   if (token) localStorage.setItem(TOKEN_KEY, token)
   else localStorage.removeItem(TOKEN_KEY)
@@ -142,7 +141,7 @@ export function AuthProvider({ children }) {
       changePassword,
       deleteAccount,
     }),
-    [user, accounts]
+    [user, accounts, login, logout, register, switchAccount, removeAccount, updateProfile, changePassword, deleteAccount]
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

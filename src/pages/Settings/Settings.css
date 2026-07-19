@@ -606,20 +606,12 @@
 }
 
 @media (max-width: 768px) {
-  .settings-page {
-    padding-top: 48px;
-  }
-
   .settings-header h1 {
     font-size: 20px;
   }
 }
 
 @media (max-width: 600px) {
-  .settings-page {
-    padding-top: 44px;
-  }
-
   .settings-grid,
   .settings-theme-grid,
   .settings-toggle-grid {
@@ -642,10 +634,6 @@
 }
 
 @media (max-width: 480px) {
-  .settings-page {
-    padding-top: 40px;
-  }
-
   .settings-header h1 {
     font-size: 18px;
   }

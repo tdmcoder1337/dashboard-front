@@ -12,18 +12,20 @@
 
 .stats-card {
   min-height: 156px;
-  background: #ffffff;
-  color: var(--text-primary, #0f172a);
-  border: 1px solid #e2e8f0;
-  border-radius: 22px;
-  box-shadow: 0 18px 36px rgba(15, 23, 42, 0.06);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, border-color 0.2s ease;
+  cursor: pointer;
+  overflow: hidden;
 }
 
 .stats-card:hover {
-  transform: scale(1.02);
-  box-shadow: 0 24px 48px rgba(15, 23, 42, 0.1);
-  box-shadow: 0 0 10px gray;
-  color: white;
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl);
+  border-color: var(--accent-ring);
 }
 
 .stats-card-content {
@@ -49,22 +51,25 @@
   place-items: center;
   font-size: 12px;
   font-weight: 800;
-  color: #2563eb;
-  background: rgba(37, 99, 235, 0.09);
+  color: var(--accent);
+  background: var(--accent-soft);
 }
 
 .stats-change {
   font-size: 12px;
   font-weight: 700;
-  color: #16a34a;
+  color: var(--success);
+  background: var(--success-soft);
+  padding: 2px 8px;
+  border-radius: 20px;
 }
 
 .stats-title {
   margin: 0 0 8px;
   font-size: 11px;
   font-weight: 700;
-  color: #475569;
-  letter-spacing: 0;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
   text-transform: uppercase;
 }
 
@@ -73,13 +78,13 @@
   font-size: 28px;
   line-height: 1.1;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--text-primary);
 }
 
 .stats-caption {
   margin: 8px 0 0;
   font-size: 12px;
-  color: #475569;
+  color: var(--text-muted);
 }
 
 .conversion-card .stats-card-content {
@@ -134,10 +139,17 @@
 .recent-sales-card {
   min-height: 360px;
   padding: 24px;
-  border-radius: 22px;
-  background: #ffffff;
-  color: var(--text-primary, #0f172a);
-  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+  border-radius: var(--radius-xl);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-color);
+  transition: box-shadow 0.3s ease, transform 0.25s ease;
+}
+
+.analytics-card:hover,
+.recent-sales-card:hover {
+  box-shadow: var(--shadow-xl);
 }
 
 @media (max-width: 1200px) {
@@ -168,7 +180,7 @@
   margin: 0;
   font-size: 18px;
   font-weight: 800;
-  color: var(--text-primary, #0f172a);
+  color: var(--text-primary);
 }
 
 .chart-legend {
@@ -183,7 +195,7 @@
   align-items: center;
   gap: 6px;
   font-size: 12px;
-  color: #334155;
+  color: var(--text-secondary);
 }
 
 .legend-dot {
@@ -202,16 +214,24 @@
 
 .period-button,
 .more-button {
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  background: #f8fafc;
-  color: #0f172a;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  background: var(--bg-muted);
+  color: var(--text-secondary);
   cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
 }
 
 .period-button {
   padding: 10px 14px;
   font-size: 13px;
+  font-weight: 600;
+}
+
+.period-button:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .more-button {
@@ -219,15 +239,23 @@
   height: 32px;
   font-size: 16px;
   line-height: 1;
+  border-radius: 8px;
+}
+
+.more-button:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .chart-area {
   width: 100%;
   height: 285px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 18px;
+  background: var(--bg-muted);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
   padding: 16px;
+  transition: background 0.25s ease, border-color 0.25s ease;
 }
 
 .recent-sales-list {
@@ -264,20 +292,20 @@
   margin: 0;
   font-size: 13px;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--text-primary);
 }
 
 .sale-info span {
   display: block;
   margin-top: 4px;
   font-size: 11px;
-  color: #475569;
+  color: var(--text-muted);
 }
 
 .recent-sale-item strong {
   font-size: 12px;
   font-weight: 800;
-  color: #16a34a;
+  color: var(--success);
 }
 
 @media (max-width: 1100px) {
@@ -346,8 +374,8 @@
 
 @media (max-width: 480px) {
   .stats-container {
-    grid-template-columns: 1fr;
-    gap: 10px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
   }
 
   .stats-card-content {
@@ -412,36 +440,6 @@
   }
 }
 
-/* Dark Mode */
-[data-theme='dark'] .stats-card,
-[data-theme='dark'] .analytics-card,
-[data-theme='dark'] .recent-sales-card {
-  background: var(--bg-surface);
-  border-color: var(--border-color);
-  color: var(--text-primary);
-}
 
-[data-theme='dark'] .stats-title,
-[data-theme='dark'] .stats-caption,
-[data-theme='dark'] .chart-legend span,
-[data-theme='dark'] .sale-info span {
-  color: var(--text-muted);
-}
-
-[data-theme='dark'] .stats-value,
-[data-theme='dark'] .analytics-card h3,
-[data-theme='dark'] .recent-sales-card h3,
-[data-theme='dark'] .period-button,
-[data-theme='dark'] .more-button,
-[data-theme='dark'] .sale-info p {
-  color: var(--text-primary);
-}
-
-[data-theme='dark'] .period-button,
-[data-theme='dark'] .more-button,
-[data-theme='dark'] .chart-area {
-  background: var(--bg-muted);
-  border-color: var(--border-color);
-}
 
 

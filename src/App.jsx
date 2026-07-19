@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './styles/global.css'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import { FiMenu, FiX } from 'react-icons/fi'
 import Siderbar from './components/Sidebar/Siderbar'
+import BottomNav from './components/BottomNav/BottomNav'
 import Dashboard from './pages/Dashboard/Dashboard'
 import Users from './pages/Users/Users'
 import Messages from './pages/Messages/Messages'
@@ -15,6 +16,11 @@ import Wishlist from './pages/Wishlist/Wishlist'
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const { pathname } = useLocation()
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [pathname])
 
   return (
     <div className={`app-shell ${sidebarOpen ? 'sidebar-open' : ''}`}>
@@ -43,6 +49,7 @@ function App() {
           <Route path="/auth/register" element={<Auth />} />
         </Routes>
       </main>
+      <BottomNav />
     </div>
   )
 }

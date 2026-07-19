@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import {
   FaAppleAlt,
@@ -168,7 +168,10 @@ export default function ProductDetails() {
   const location = useLocation()
   const navigate = useNavigate()
   const { t, locale } = useLanguage()
-  const priceFormatter = new Intl.NumberFormat(locale === 'ru-RU' ? 'ru-RU' : 'uz-UZ')
+  const priceFormatter = useMemo(
+    () => new Intl.NumberFormat(locale === 'ru-RU' ? 'ru-RU' : 'uz-UZ'),
+    [locale]
+  )
   const [product, setProduct] = useState(() =>
     location.state?.product ? buildProductView(location.state.product) : null
   )
@@ -182,6 +185,7 @@ export default function ProductDetails() {
   const [toasts, setToasts] = useState([])
   const { addToCart } = useCart()
   const { toggleWishlist, isInWishlist } = useWishlist()
+  const hasProductFromState = useRef(!!location.state?.product)
 
   const showToast = useCallback((productName) => {
     const id = Date.now()
@@ -190,25 +194,36 @@ export default function ProductDetails() {
   }, [])
 
   useEffect(() => {
+    let cancelled = false
+
     const loadData = async () => {
       try {
         const { data } = await productsApi.getAll()
+        if (cancelled) return
         setAllProducts(data)
-        
+
         const found = data.find((item) => item._id === id || item.id === id)
         if (found) {
           setProduct(buildProductView(found))
-        } else if (!product) {
+        } else if (!hasProductFromState.current) {
           setError('Mahsulot topilmadi')
         }
       } catch {
-        setError(t('products.loadError'))
+        if (!cancelled) setError(t('products.loadError'))
       } finally {
-        setLoading(false)
+        if (!cancelled) setLoading(false)
       }
     }
 
-    loadData()
+    if (!hasProductFromState.current) {
+      loadData()
+    } else {
+      setLoading(false)
+    }
+
+    return () => {
+      cancelled = true
+    }
   }, [id, t])
 
   if (loading) {

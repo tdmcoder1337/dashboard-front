@@ -1,9 +1,6 @@
 .users-page {
   min-height: calc(100vh - 48px);
-  width: calc(100vw - 280px - 48px);
-  max-width: calc(100vw - 280px - 48px);
-  margin-left: 280px;
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .users-header {
@@ -636,10 +633,7 @@
 @media (max-width: 768px) {
   .users-page {
     min-height: calc(100vh - 32px);
-    width: 100%;
-    max-width: 100%;
-    margin-left: 0;
-    padding: 60px 14px 24px;
+    padding: 0 14px 24px;
   }
 
   .users-header,
@@ -707,10 +701,7 @@
 
 @media (max-width: 480px) {
   .users-page {
-    width: 100%;
-    max-width: 100%;
-    margin-left: 0;
-    padding: 56px 10px 20px;
+    padding: 0 10px 20px;
   }
 
   .users-header h1 {
@@ -770,24 +761,6 @@
 }
 
 /* Dark Mode */
-[data-theme='dark'] .users-page {
-  color: var(--text-primary);
-}
-
-:root[data-compact-sidebar='true'] .users-page {
-  margin-left: 82px;
-  width: calc(100vw - 82px - 48px);
-  max-width: calc(100vw - 82px - 48px);
-}
-
-@media (max-width: 768px) {
-  :root[data-compact-sidebar='true'] .users-page {
-    margin-left: 0;
-    width: 100%;
-    max-width: 100%;
-  }
-}
-
 [data-theme='dark'] .users-breadcrumb,
 [data-theme='dark'] .users-breadcrumb span + span::before,
 [data-theme='dark'] .users-stat p,

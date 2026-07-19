@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import {
   FaAdjust,
@@ -105,12 +105,13 @@ function Settings() {
   const [lastSavedAt, setLastSavedAt] = useState(null)
   const [isDeletingAccount, setIsDeletingAccount] = useState(false)
   const fileInputRef = useRef(null)
+  const prevUserId = useRef(user?.id)
 
-  useEffect(() => {
+  if (prevUserId.current !== user?.id) {
+    prevUserId.current = user?.id
     setProfileForm(buildProfileForm(user))
     setProfileStatus(null)
-
-  }, [user?.id])
+  }
 
   if (!isAuthenticated) {
     return (
